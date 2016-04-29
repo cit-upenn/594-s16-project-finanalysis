@@ -22,7 +22,7 @@ public class ValuationTester {
 		FinDocParser jcf = null;
 		FinDocParser jinc = null;
 		ArrayList<FinDocParser> docs = new ArrayList<FinDocParser>();
-		NodeCommunicator nc = null;
+//		NodeCommunicator nc = null;
 		
 		try {
 //			nc = new NodeChecker(new File("check.json"));
@@ -33,14 +33,15 @@ public class ValuationTester {
 			docs.add(jbal);
 			docs.add(jcf);
 			docs.add(jinc);
-			nc = new NodeCommunicator(docs,"NodetoJava.txt");
+//			NodeCommunicator.getInstance(docs,"NodetoJava.txt");
+			executor.scheduleAtFixedRate(NodeCommunicator.getInstance(docs,"NodetoJava.txt"), 0, 3000);
+
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		executor.scheduleAtFixedRate(nc, 0, 3000);
 //		System.out.println(nc.getDecision());
 //		if(nc.getDecision() == true){
 //			HashMap<String, ArrayList<Double>> balanceData = jbal.getFinData();

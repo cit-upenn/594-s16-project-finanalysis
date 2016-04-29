@@ -23,12 +23,13 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 	private PrintWriter out2;
 	private Gson gson;
 	private String json;
+	private static NodeCommunicator comm;
 	ArrayList<FinDocParser> docs;
 
 	
 	
 
-	public NodeCommunicator(ArrayList<FinDocParser> docs, String text) throws FileNotFoundException{
+	private NodeCommunicator(ArrayList<FinDocParser> docs, String text) throws FileNotFoundException{
 //		this.jsRead = new JsonReader(new FileReader(json));
 		this.gson = new Gson();
 		this.text = text;
@@ -42,8 +43,15 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 		this.docs = docs;
 
 	}
+	
+	public static NodeCommunicator getInstance(ArrayList<FinDocParser> docs, String text) throws FileNotFoundException{
+		if(comm == null){
+			comm = new NodeCommunicator(docs, text);
+		}
+		return comm;
+	}
 	@Override
-	public void run() {
+	public synchronized void run() {
 		try {
 				System.out.println("in try!");
 				File file = new File(text);
@@ -104,12 +112,12 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 //		content = "{\"status\": true}";
 	}
 	
-	public boolean getDecision(){
+	private boolean getDecision(){
 		System.out.println("Decision is " + decision);
 		return decision;
 	}
 	
-	public void setOutput(Map<String, Double> valuation){
+	private void setOutput(Map<String, Double> valuation){
 		json = gson.toJson(valuation);
 		
 	}
