@@ -8,7 +8,7 @@
 	var CFDone = false;
 	var incDone = false;
 	var ratioDone = false;
-	ticker='AMZN';
+	ticker='FB';
 	JavatoNode = new Object;
 
 	var setTicker = (symbol)=>{
@@ -40,8 +40,9 @@
 	}
 
 	module.exports = {
-		  test: ()=>{
-		  	console.log('this is just a very very long test string');
+		  setTicker: (symbol)=>{
+		  		ticker = symbol;
+				console.log('ticker is ' + ticker);
 		  },
 		  getJavaOutput: () => {
 		  	console.log('getting JavatoNode!');
@@ -202,13 +203,13 @@
    			// console.log(ratioDone);
    			if(	balanceDone === true &&  CFDone === true &&  incDone === true &&  ratioDone === true){
    				console.log('all true!');
-   				check = '{"check": "OK"}'
-   				fs.writeFile('check.json', check, (err) => {
+   				// check = '{"check": "OK"}'
+   	// 			fs.writeFile('check.json', check, (err) => {
 
-			  		if (err) throw err;
-					  console.log('OKAY JSON DONE!');
-					  // ratioDone = !ratioDone;
-				});
+			 //  		if (err) throw err;
+				// 	  console.log('OKAY JSON DONE!');
+				// 	  // ratioDone = !ratioDone;
+				// });
 				fs.writeFile('NodetoJava.txt', 'OKAY', (err) => {
 
 			  		if (err) throw err;
