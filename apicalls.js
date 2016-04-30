@@ -1,6 +1,6 @@
    
    // import {ticker} from 'interface.jsx';
-   	var face = require('./interface.jsx');
+   	// var face = require('./interface.jsx');
 	var https = require('https');
 	var fs = require('fs');
 	var async = require('async');
@@ -8,7 +8,17 @@
 	var CFDone = false;
 	var incDone = false;
 	var ratioDone = false;
-	var ticker = face.ticker;
+	ticker='AMZN';
+
+	var setTicker = (symbol)=>{
+		ticker = symbol;
+		console.log(ticker);
+	}
+
+	var getTicker = ()=>{
+		return ticker;
+	}
+
 
 	// fs.readFile('output.json', 'utf8', function (err, data) {
 	//   if (err) throw err;
