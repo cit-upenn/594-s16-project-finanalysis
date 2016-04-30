@@ -7,7 +7,6 @@
     <script src="build/react-dom.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script type="text/javascript" src ="apicalls.js"></script>
   </head>
   <body>
     <div id="header"></div>
@@ -21,15 +20,30 @@
       });
 
       setInterval(function() {
-        var json = getTicker();
-        console.log(json);
-        var messages = ['Hello, World', 'Hello, Planet', 'Hello, Universe'];
-        var randomMessage = messages[Math.floor((Math.random() * 3))];
+        var fin = '';
+        $.getJSON('http://localhost:3000/', 
+          (json, cb)=>{
+            // fin = JSON.parse(json);
+            fin = json;
+            console.log(fin);
+            cb = ()=>{
+              console.log('render' + fin);
+            ReactDOM.render(
+                <Greeting message={fin}/>,
+                document.getElementById('header')
+              );
+            cb();
+            }
+          });
+        // var messages = ['Hello, World', 'Hello, Planet', 'Hello, Universe'];
+        var msg = fin;
+        console.log('EPS is ' +fin.EPS);
+        // console.log(fin);
 
-        ReactDOM.render(
-          <Greeting message={randomMessage}/>,
-          document.getElementById('greeting-div')
-        );
+        // ReactDOM.render(
+        //   <Greeting message={msg}/>,
+        //   document.getElementById('header')
+        // );
       }, 2000);
 
     

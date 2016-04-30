@@ -9,6 +9,7 @@
 	var incDone = false;
 	var ratioDone = false;
 	ticker='AMZN';
+	JavatoNode = new Object;
 
 	var setTicker = (symbol)=>{
 		ticker = symbol;
@@ -18,6 +19,41 @@
 	var getTicker = ()=>{
 		return ticker;
 	}
+
+	var test = () =>{
+		console.log('this is just a long test string');
+	}
+	var getJavaOutput = () => {
+			console.log('getting JavatoNode!');
+		    console.log('Java status: ' + JavatoNode.Ready);
+            console.log('FCF: ' + JavatoNode.FCF);
+            console.log('FCFperShare: ' + JavatoNode.FCFperShare);
+            console.log('E/A: ' + JavatoNode.EA);
+            console.log('L/A: ' + JavatoNode.LA);
+            console.log('EPS: ' + JavatoNode.EPS);
+		return JavatoNode;
+	}
+
+	var setJavaOutput = (input) => {
+		JavatoNode = input;
+		console.log('JtN set!');
+	}
+
+	module.exports = {
+		  test: ()=>{
+		  	console.log('this is just a very very long test string');
+		  },
+		  getJavaOutput: () => {
+		  	console.log('getting JavatoNode!');
+		    console.log('Java status: ' + JavatoNode.Ready);
+            console.log('FCF: ' + JavatoNode.FCF);
+            console.log('FCFperShare: ' + JavatoNode.FCFperShare);
+            console.log('E/A: ' + JavatoNode.EA);
+            console.log('L/A: ' + JavatoNode.LA);
+            console.log('EPS: ' + JavatoNode.EPS);
+			return JavatoNode;
+			}
+		};
 
 
 	// fs.readFile('output.json', 'utf8', function (err, data) {
@@ -149,40 +185,21 @@
 		}
 
 
-
-
-		
 		var b = () =>{https.request(getBalance, writeBalance).end();}
 		var c = () =>{https.request(getCF, writeCF).end(); }
 		var i = () =>{https.request(getInc, writeInc).end(); }
 		var r = () =>{https.request(getRatio, writeRatio).end(); }
-		// console.log(balance);
-		// doWork = (get, write, cb) => {https.request(get, write).end(); cb();}
 
-
-		// async.series([
-		// 	  function (callback) {
-		// 	    doWork(getBalance, writeBalance, callback);
-		// 	  }, function (callback) {
-		// 	    doWork(getCF, writeCF, callback);
-		// 	  }, function (callback) {
-		// 	    doWork(getInc,writeInc, callback);
-		// 	  }, function (callback) {
-		// 	    doWork(getRatio, writeRatio,callback);
-		// 	  }
-		// 	], function () {
-		// 	  console.log('all Done!');
-		// 	});
    		b();
    		c();
    		i();
    		r();
 
 		setInterval(()=>{
-   			console.log(balanceDone);
-   			console.log(CFDone);
-   			console.log(incDone);
-   			console.log(ratioDone);
+   			// console.log(balanceDone);
+   			// console.log(CFDone);
+   			// console.log(incDone);
+   			// console.log(ratioDone);
    			if(	balanceDone === true &&  CFDone === true &&  incDone === true &&  ratioDone === true){
    				console.log('all true!');
    				check = '{"check": "OK"}'
@@ -208,52 +225,21 @@
 				  if (err) throw err;
 				  obj = JSON.parse(data);
 				  if(obj.Ready === 1.0){
-				  	  console.log('Java status: ' + obj.Ready);
-					  console.log('FCF: ' + obj.FCF);
-					  console.log('FCFperShare: ' + obj.FCFperShare);
-					  console.log('E/A: ' + obj.EA);
-					  console.log('L/A: ' + obj.EA);
-					  console.log('EPS: ' + obj.EA);
+				  	//   console.log('Java status: ' + obj.Ready);
+					  // console.log('FCF: ' + obj.FCF);
+					  // console.log('FCFperShare: ' + obj.FCFperShare);
+					  // console.log('E/A: ' + obj.EA);
+					  // console.log('L/A: ' + obj.EA);
+					  // console.log('EPS: ' + obj.EA);
+					  console.log('JtN got!');
+					  setJavaOutput(obj);
+
 				  }
 
 			});
 		}, 2000);
 
-  //  		writeLogLine = (str, cb) => {console.log(str); cb();}
-
-  //  		async.series([
-  // 			 function (callback) {
-		//     writeLogLine('This is the first line', callback);
-		//   }, function (callback) {
-		//     writeLogLine('This is the second line', callback);
-		//   }, function (callback) {
-		//     writeLogLine('This is the third line', callback);
-		//   }
-		// ], function () {
-		//   console.log('Done writing the logs');
-		// });
-
-
-
-		// writeLogLine('This is the first line', function () {
-		//   writeLogLine('This is the second line', function () {
-		//       writeLogLine('This is the third line', function () {
-		//           console.log('Done writing the logs.');
-		//         });
-		//     });
-		// });
-
-
-
-		// b(()=> {
-		//   c(()=> {
-		//      i(()=> {
-		//       	r(()=> {
- 	// 				console.log(ratioDone);
-		//       		});
-		//         });
-		//     });
-		// });
+ 
 
 
 
