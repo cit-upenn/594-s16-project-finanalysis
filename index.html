@@ -9,13 +9,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
   </head>
   <body>
-    <div id = "react-app"></div>
+    <div id = "searchbox"></div>
     <div id="data"></div>
     <script type="text/babel">
       var Greeting = React.createClass({
         render: function() {
           return (
             <p>{this.props.EPS}</p>
+            // React.createElement('p',
+            //   {key: 1, name: "James K Nelson",  description: "Front-end Unicorn"})
 
           );
         }
@@ -24,7 +26,7 @@
       setInterval(function() {
         var fin = '';
         var displayJSON =(fin) =>{
-            console.log('render' + fin);
+            // console.log('render' + fin);
             // var number = fin.EPS
             // var data =  [{EPS: fin.EPS}];
             ReactDOM.render(
@@ -48,8 +50,18 @@
 
       }, 2000);
 
-      var setPOSTrequest =() =>{
-        
+      var sendPOSTrequest =(ticker, post) =>{
+        console.log('in post request: ' + ticker);
+        post(ticker);
+      }
+
+      var postQuery = (ticker)=>{
+        console.log('in post query!')
+         $.post( 'http://localhost:3000/',ticker, function( data ) {
+              // data = 'ticker';
+              console.log('data sent: ' + data);
+            });
+
       }
 
       // The Ticker search comes from a very simplified version of simple forms template shown here:
@@ -71,13 +83,13 @@
           this.props.onChange(Object.assign({}, this.props.value, {name: e.target.value}));
         },
         
-        onEmailChange: function(e) {
-          this.props.onChange(Object.assign({}, this.props.value, {email: e.target.value}));
-        },
+        // onEmailChange: function(e) {
+        //   this.props.onChange(Object.assign({}, this.props.value, {email: e.target.value}));
+        // },
         
-        onDescriptionChange: function(e) {
-          this.props.onChange(Object.assign({}, this.props.value, {description: e.target.value}));
-        },
+        // onDescriptionChange: function(e) {
+        //   this.props.onChange(Object.assign({}, this.props.value, {description: e.target.value}));
+        // },
 
         onSubmit: function(e) {
           e.preventDefault();
@@ -89,22 +101,22 @@
             React.createElement('form', {onSubmit: this.onSubmit, className: 'ContactForm', noValidate: true},
               React.createElement('input', {
                 type: 'text',
-                placeholder: 'Name (required)',
+                placeholder: 'Enter Ticker Here (e.g. "FB")',
                 value: this.props.value.name,
                 onChange: this.onNameChange,
               }),
-              React.createElement('input', {
-                type: 'email',
-                placeholder: 'Email (required)',
-                value: this.props.value.email,
-                onChange: this.onEmailChange,
-              }),
-              React.createElement('textarea', {
-                placeholder: 'Description',
-                value: this.props.value.description,
-                onChange: this.onDescriptionChange,
-              }),
-              React.createElement('button', {type: 'submit'}, "Add Contact")
+              // React.createElement('input', {
+              //   type: 'email',
+              //   placeholder: 'Email (required)',
+              //   value: this.props.value.email,
+              //   onChange: this.onEmailChange,
+              // }),
+              // React.createElement('textarea', {
+              //   placeholder: 'Description',
+              //   value: this.props.value.description,
+              //   onChange: this.onDescriptionChange,
+              // }),
+              React.createElement('button', {type: 'submit'}, "Search Company")
             )
           );
         },
@@ -122,7 +134,7 @@
           return (
             React.createElement('li', {className: 'ContactItem'},
               React.createElement('h2', {className: 'ContactItem-name'}, this.props.name),
-              React.createElement('a', {className: 'ContactItem-email', href: 'mailto:'+this.props.email}, this.props.email),
+              // React.createElement('a', {className: 'ContactItem-email', href: 'mailto:'+this.props.email}, this.props.email),
               React.createElement('div', {className: 'ContactItem-description'}, this.props.description)
             )
           );
@@ -145,7 +157,7 @@
 
           return (
             React.createElement('div', {className: 'ContactView'},
-              React.createElement('h1', {className: 'ContactView-title'}, "Contacts"),
+              React.createElement('h1', {className: 'ContactView-title'}, "Company Financials Analyzer Alpha v0.001"),
               React.createElement('ul', {className: 'ContactView-list'}, contactItemElements),
               React.createElement(ContactForm, {
                 value: this.props.newContact,
@@ -163,7 +175,8 @@
        */
 
 
-      var CONTACT_TEMPLATE = {name: "", email: "", description: "", errors: null};
+      // var CONTACT_TEMPLATE = {name: "", email: "", description: "", errors: null};
+         var CONTACT_TEMPLATE = {name: "", description: "", errors: null};
 
 
 
@@ -179,8 +192,12 @@
 
       function submitNewContact() {
         var contact = Object.assign({}, state.newContact, {key: state.contacts.length + 1, errors: {}});
-        
-        if (contact.name && contact.email) {
+        // var ticker = contact.name;
+        var ticker = contact;
+        sendPOSTrequest(ticker, postQuery);
+
+        // if (contact.name && contact.email) {
+          if (contact.name) {
           setState(
             Object.keys(contact.errors).length === 0
             ? {
@@ -210,14 +227,14 @@
             onNewContactChange: updateNewContact,
             onNewContactSubmit: submitNewContact,
           })),
-          document.getElementById('react-app')
+          document.getElementById('searchbox')
         );
       }
 
       // Set initial data
       setState({
         contacts: [
-          // {key: 1, name: "James K Nelson", email: "james@jamesknelson.com", description: "Front-end Unicorn"},
+          {key: 1, name: "James K Nelson",  description: "Front-end Unicorn"},
           // {key: 2, name: "Jim", email: "jim@example.com"},
         ],
         newContact: Object.assign({}, CONTACT_TEMPLATE),

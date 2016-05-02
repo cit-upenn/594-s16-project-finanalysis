@@ -8,13 +8,13 @@
 	var CFDone = false;
 	var incDone = false;
 	var ratioDone = false;
-	ticker='FB';
+	// var ticker = '';
 	JavatoNode = new Object;
 
-	var setTicker = (symbol)=>{
-		ticker = symbol;
-		console.log(ticker);
-	}
+	// var setTicker = (symbol)=>{
+	// 	console.log(ticker);
+	// 	makeCalls();
+	// }
 
 	var getTicker = ()=>{
 		return ticker;
@@ -41,8 +41,13 @@
 
 	module.exports = {
 		  setTicker: (symbol)=>{
-		  		ticker = symbol;
+		  		var ticker = symbol;
+		  		var getBalance = makeGetters(ticker,'/balancesheet?' );
+		  		var getCF = makeGetters(ticker,'/cashflows?' );
+		  		var getInc = makeGetters(ticker,'/income?' );
+		  		var getRatio = makeGetters(ticker,'/ratios?');
 				console.log('ticker is ' + ticker);
+				makeCalls(getBalance,getCF,getInc,getRatio);
 		  },
 		  getJavaOutput: () => {
 		  	console.log('getting JavatoNode!');
@@ -55,14 +60,6 @@
 			return JavatoNode;
 			}
 		};
-
-
-	// fs.readFile('output.json', 'utf8', function (err, data) {
-	//   if (err) throw err;
-	//   obj = JSON.parse(data);
-	//   console.log(obj)
-	// });
-
 
 
 	// make ticker a variable based on request from something else
@@ -78,40 +75,48 @@
 
 		};
      
-   
-    var getBalance = {
-			hostname: "services.last10k.com",
-			path: '/v1/company/' + ticker + '/balancesheet?',
+   	var makeGetters = (ticker, doc) =>{
+   		var koolObj = {
+   			hostname: "services.last10k.com",
+			path: '/v1/company/' + ticker + doc,
 			method: 'GET',
 			headers: header,
 			qs: params,
-		};
+   		};
+   		return koolObj;
+   	}
+  //   var getBalance = {
+		// 	hostname: "services.last10k.com",
+		// 	path: '/v1/company/' + ticker + '/balancesheet?',
+		// 	method: 'GET',
+		// 	headers: header,
+		// 	qs: params,
+		// };
 
-   var getCF = {
-			hostname: "services.last10k.com",
-			path: '/v1/company/' + ticker + '/cashflows?',
-			method: 'GET',
-			headers: header,
-			qs: params,
-		};
+  //   var getCF = {
+		// 	hostname: "services.last10k.com",
+		// 	path: '/v1/company/' + ticker + '/cashflows?',
+		// 	method: 'GET',
+		// 	headers: header,
+		// 	qs: params,
+		// };
 
-   var getInc = {
-			hostname: "services.last10k.com",
-			path: '/v1/company/' + ticker + '/income?',
-			method: 'GET',
-			headers: header,
-			qs: params,
-		};
+  //   var getInc = {
+		// 	hostname: "services.last10k.com",
+		// 	path: '/v1/company/' + ticker + '/income?',
+		// 	method: 'GET',
+		// 	headers: header,
+		// 	qs: params,
+		// };
 
-   var getRatio = {
-			hostname: "services.last10k.com",
-			path: '/v1/company/' + ticker + '/ratios?',
-			method: 'GET',
-			headers: header,
-			// qs: params,
-		};
+  //  var getRatio = {
+		// 	hostname: "services.last10k.com",
+		// 	path: '/v1/company/' + ticker + '/ratios?',
+		// 	method: 'GET',
+		// 	headers: header,
+		// };
 
-	var writeBalance = (response)=> {
+	var writeBalance =(response)=> {
 		  var str = '';
 		  // appending data to string
 		  response.on('data', function (recieved) {
@@ -186,24 +191,35 @@
 		}
 
 
-		var b = () =>{https.request(getBalance, writeBalance).end();}
-		var c = () =>{https.request(getCF, writeCF).end(); }
-		var i = () =>{https.request(getInc, writeInc).end(); }
-		var r = () =>{https.request(getRatio, writeRatio).end(); }
+		var b = (getBalance, writeBalance) =>{https.request(getBalance, writeBalance).end();}
+		var c = (getCF, writeCF) =>{https.request(getCF, writeCF).end(); }
+		var i = (getInc, writeInc) =>{https.request(getInc, writeInc).end(); }
+		var r = (getRatio, writeRatio) =>{https.request(getRatio, writeRatio).end(); }
 
-   		b();
-   		c();
-   		i();
-   		r();
 
+				// b();
+		  //  		c();
+		  //  		i();
+		  //  		r();
+
+   		var makeCalls = (getBalance,getCF,getInc,getRatio ) =>{
+   			// console.log('Making the calls! Ticker is ' + ticker);
+			   	b(getBalance, writeBalance);
+		   		c(getCF, writeCF);
+		   		i(getInc, writeInc);
+		   		r(getRatio, writeRatio);
+   		}
+
+   		// check if all API calls have returned
 		setInterval(()=>{
    			// console.log(balanceDone);
    			// console.log(CFDone);
    			// console.log(incDone);
    			// console.log(ratioDone);
    			if(	balanceDone === true &&  CFDone === true &&  incDone === true &&  ratioDone === true){
-   				console.log('all true!');
+   				// console.log('all true!');
    				// check = '{"check": "OK"}'
+
    	// 			fs.writeFile('check.json', check, (err) => {
 
 			 //  		if (err) throw err;
@@ -214,17 +230,18 @@
 
 			  		if (err) throw err;
 					  console.log('OKAY TEXT DONE!');
-					  // ratioDone = !ratioDone;
 				});
 				  
    			}
    			
    		}, 1500)
 
+		// See if Java calculator has returned 
    		setInterval(()=>{
 	   		fs.readFile('JavatoNode.json', 'utf8', function (err, data) {
 				  if (err) throw err;
 				  obj = JSON.parse(data);
+				  console.log('Ready: ' + obj.Ready);
 				  if(obj.Ready === 1.0){
 				  	//   console.log('Java status: ' + obj.Ready);
 					  // console.log('FCF: ' + obj.FCF);
@@ -234,6 +251,11 @@
 					  // console.log('EPS: ' + obj.EA);
 					  console.log('JtN got!');
 					  setJavaOutput(obj);
+					  fs.writeFile('NodetoJava.txt', 'WAIT', (err) => {
+
+					  		if (err) throw err;
+							  console.log('WAIT TEXT!');
+					  });
 
 				  }
 

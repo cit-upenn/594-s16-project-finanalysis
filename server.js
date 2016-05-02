@@ -1,9 +1,18 @@
 var express = require('express');
+var connect = require('connect');
 var api = require('./apicalls.js');
 var app = express();
+var bodyParser = require('body-parser');
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
 
-  var output;
-  
+
+
+
+// var output;
+
 app.use(function(req, res, next) {
     // Set permissive CORS header - this allows this server to be used only as
     // an API server in conjunction with something like webpack-dev-server.
@@ -24,11 +33,19 @@ app.use(function(req, res, next) {
 
 app.get('/', function (req, res) {
   var output= api.getJavaOutput();
-  console.log('sending this: ' + JSON.stringify(output));
+  console.log('SERVER: sending this: ' + JSON.stringify(output));
   res.send(JSON.stringify(output));
 
 });
 
+app.post('/', function (req, res) {
+  var query=req.body.name;
+  console.log('SERVER: got this: ' + query);
+  api.setTicker(query);
+  res.send('POST: GOT TICKER');
+
+});
+
 app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+  console.log('Mini-server listening on port 3000!');
 });
