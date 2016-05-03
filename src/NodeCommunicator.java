@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 public class NodeCommunicator extends TimerTask implements Runnable{
-	private ReentrantLock myLock;
+//	private ReentrantLock myLock;
 	private boolean decision;
 	private String text;
 	private HashMap<String, Double> content;
@@ -26,34 +26,43 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 	private static NodeCommunicator comm;
 	ArrayList<FinDocParser> docs;
 
-	
-	
 
-	private NodeCommunicator(ArrayList<FinDocParser> docs, String text) throws FileNotFoundException{
-//		this.jsRead = new JsonReader(new FileReader(json));
+	
+	
+	/**
+	 * The constructor for NodeCommunicator. It takes in an ArrayList of documents and 
+	 * a txt doc that tells it to start/stop the JSON-making.
+	 * @param docs the parsed financial docs
+	 * @param text a text file that tells the communicator to start/stop parsing
+	 * @throws FileNotFoundException
+	 */
+	private NodeCommunicator(String text) throws FileNotFoundException{
 		this.gson = new Gson();
 		this.text = text;
-		this.myLock = new ReentrantLock();
-		this.out = new PrintWriter(new FileOutputStream("JavatoNode.json", false));
-		this.out2 = new PrintWriter(new FileOutputStream("JavatoNode.json", false));
-//		this.out2 = new PrintWriter("")
+//		this.myLock = new ReentrantLock();
+
 		this.content = new HashMap<String, Double>();
 		content.put("Ready", 0.0);
 		this.json = gson.toJson(content);;
-		this.docs = docs;
+		this.docs = new ArrayList<FinDocParser>();
 
 	}
 	
-	public static NodeCommunicator getInstance(ArrayList<FinDocParser> docs, String text) throws FileNotFoundException{
+	public synchronized static NodeCommunicator getInstance(String text) throws FileNotFoundException{
 		if(comm == null){
-			comm = new NodeCommunicator(docs, text);
+			comm = new NodeCommunicator( text);
 		}
 		return comm;
 	}
 	@Override
 	public synchronized void run() {
 		try {
-				System.out.println("in try!");
+//				System.out.println("in try!");
+				this.out = new PrintWriter(new FileOutputStream("JavatoNode.json", false));
+				this.out2 = new PrintWriter(new FileOutputStream("JavatoNode.json", false));
+				FinDocParser jbal = new FinDocParser(new File("balance.json"), 0);
+				FinDocParser jcf = new FinDocParser(new File("CashFlow.json"), 1);
+				FinDocParser jinc = new FinDocParser(new File("Income.json"), 2);
 				File file = new File(text);
 				BufferedReader in = new BufferedReader(new FileReader(file));
 				while (in.lines() != null) {
@@ -63,19 +72,22 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 						break;
 					}
 					if(line.equals("OKAY")){
-						System.out.println("OKAY");
+						
+						System.out.println("in NodeComm, Company: " + jbal.getCompany());
+						docs.add(jbal);
+						docs.add(jcf);
+						docs.add(jinc);
+						System.out.println("OKAY: documents will be parsed!");
 						decision = true;
 						System.out.println("decision-- " + decision);
+					}else{
+						decision = false;
 					}
 				}
 				
 				out2.println(json);
 				out2.close();
 				
-//				if(json != null){
-//					out.println(json);
-//					
-//				}
 				if(getDecision() == true){
 					HashMap<String, ArrayList<Double>> balanceData = new HashMap<String, ArrayList<Double>>();
 					HashMap<String, ArrayList<Double>> CFData = new HashMap<String, ArrayList<Double>>();
@@ -96,6 +108,7 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 					
 					setOutput(vt0.getJSON());
 					out.println(json);
+					System.out.println("JSON WRITTEN!!!");
 					out.close();
 				}
 				
@@ -104,14 +117,20 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			System.out.println("Error getting Input/Output!");
 			e.printStackTrace();
 		}
 	}
 	
-	public void checkStatus(){
-//		content = "{\"status\": true}";
-	}
+//	public void checkStatus(){
+////		content = "{\"status\": true}";
+//	}
 	
+	/**
+	 * This method gets the decision boolean, which determines whether parsing happens
+	 * this interval or not
+	 * @return the decision boolean; true if parsing, false if not
+	 */
 	private boolean getDecision(){
 		System.out.println("Decision is " + decision);
 		return decision;

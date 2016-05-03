@@ -41,14 +41,8 @@ public class FinDocParser {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		 }else if(document == 3){
-			 try {
-				readRatio(jsRead);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		 }
+		 
 
 
 		
@@ -254,76 +248,8 @@ public class FinDocParser {
 	     incdat.endObject();
 		
 	}
-	public void readRatio(JsonReader rat)throws IOException{
-		rat.beginObject();
-	     while (rat.hasNext()) {
-	       String name = rat.nextName();
-	       if (name.equals("Company")) {
-	         company = rat.nextString();
-	         System.out.println("Company: " + company);
-	       }  else if(name.equals("Status")){
-	    	   year = rat.nextInt();
-	       }else if(name.equals("TotalStockholdersEquity")){
-	    	   parseEquityHistorical(rat);
-	       } else if(name.equals("DebtEquity")){
-	    	   parseDEHistorical(rat);
-	       }else if(name.equals("EarningsPerShare")){
-	    	   parseEPSHistorical(rat);
-	       }else if(name.equals("FreeCashFlow")){
-	    	   parseFCFHistorical(rat);
-	       }else{
-	    	   rat.skipValue();
-	       }
-	     }
-	     rat.endObject();
-		
-	}
 	
-	public void parseEquityHistorical(JsonReader ratdat)throws IOException{
-		ratdat.beginObject();
-	     while (ratdat.hasNext()) {
-	    	 String name = ratdat.nextName();
-	    	if (name.equals("NetIncomeLoss")) {
-				  buildFinData("NetIncome", ratdat.nextDouble(), year);
-
-//	         finData.put("NetIncome", ratdat.nextDouble());
-	         System.out.println("Net Income: " + finData.get("NetIncome").get(year));
-	       } else if (name.equals("CashAndCashEquivalentsPeriodIncreaseDecrease")) {
-				  buildFinData("CashEqvPeriod", ratdat.nextDouble(), year);
-
-//	         finData.put("CashEqvPeriod", ratdat.nextDouble());
-	         System.out.println("CashEqvPeriod: "+ finData.get("CashEqvPeriod").get(year));
-	       } else if (name.equals("OperatingIncomeLoss")) {
-				  buildFinData("OperatingIncome", ratdat.nextDouble(), year);
-
-//	         finData.put("OperatingIncome", ratdat.nextDouble());
-	         System.out.println("OperatingIncomeLoss: " + finData.get("OperatingIncome").get(year));
-	       } else if (name.equals("EarningsPerShareBasic")) {
-				  buildFinData("EPS", ratdat.nextDouble(), year);
-
-//		     finData.put("EPS", ratdat.nextDouble());
-		     System.out.println("EPS: " + finData.get("EPS").get(year));     
-	       }else if (name.equals("Liabilities")){
-//		     finData.put("Liabilities", cfdat.nextDouble());
-//	    	 System.out.println("Liability: " + finData.get("Liabilities"));
-	       }else {
-	    	   ratdat.skipValue();
-	       }
-	     }
-	     ratdat.endObject();
-		
-	}
 	
-	public void parseDEHistorical(JsonReader ratdat){
-		
-	}
-	
-	public void parseEPSHistorical(JsonReader ratdat){
-		
-	}
-	public void parseFCFHistorical(JsonReader ratdat){
-		
-	}
 	
 	public String getCompany(){
 		return company;

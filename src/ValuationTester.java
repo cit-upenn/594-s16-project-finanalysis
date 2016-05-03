@@ -27,14 +27,14 @@ public class ValuationTester {
 		try {
 //			nc = new NodeChecker(new File("check.json"));
 			
-			jbal = new FinDocParser(new File("balance.json"), 0);
-			jcf = new FinDocParser(new File("CashFlow.json"), 1);
-			jinc = new FinDocParser(new File("Income.json"), 2);
-			docs.add(jbal);
-			docs.add(jcf);
-			docs.add(jinc);
+//			jbal = new FinDocParser(new File("balance.json"), 0);
+//			jcf = new FinDocParser(new File("CashFlow.json"), 1);
+//			jinc = new FinDocParser(new File("Income.json"), 2);
+//			docs.add(jbal);
+//			docs.add(jcf);
+//			docs.add(jinc);
 //			NodeCommunicator.getInstance(docs,"NodetoJava.txt");
-			executor.scheduleAtFixedRate(NodeCommunicator.getInstance(docs,"NodetoJava.txt"), 0, 3000);
+			executor.scheduleAtFixedRate(NodeCommunicator.getInstance("NodetoJava.txt"), 0, 3000);
 
 
 		} catch (FileNotFoundException e) {
@@ -42,19 +42,8 @@ public class ValuationTester {
 			e.printStackTrace();
 		}
 		
-//		System.out.println(nc.getDecision());
-//		if(nc.getDecision() == true){
-//			HashMap<String, ArrayList<Double>> balanceData = jbal.getFinData();
-//			HashMap<String, ArrayList<Double>> CFData = jcf.getFinData();
-//			HashMap<String, ArrayList<Double>>incData = jinc.getFinData();
-//			Valuator vt0 = new Valuator(balanceData, CFData, incData, 0);
-//			
-//			nc.setOutput(vt0.getJSON());
-//		}
 
-		
-
-		
+				
 
 
 	}

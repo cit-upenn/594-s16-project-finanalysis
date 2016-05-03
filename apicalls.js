@@ -1,6 +1,4 @@
    
-   // import {ticker} from 'interface.jsx';
-   	// var face = require('./interface.jsx');
 	var https = require('https');
 	var fs = require('fs');
 	var async = require('async');
@@ -11,18 +9,13 @@
 	// var ticker = '';
 	JavatoNode = new Object;
 
-	// var setTicker = (symbol)=>{
-	// 	console.log(ticker);
-	// 	makeCalls();
+	// var getTicker = ()=>{
+	// 	return ticker;
 	// }
 
-	var getTicker = ()=>{
-		return ticker;
-	}
-
-	var test = () =>{
-		console.log('this is just a long test string');
-	}
+	// var test = () =>{
+	// 	console.log('this is just a long test string');
+	// }
 	var getJavaOutput = () => {
 			console.log('getting JavatoNode!');
 		    console.log('Java status: ' + JavatoNode.Ready);
@@ -210,6 +203,22 @@
 		   		r(getRatio, writeRatio);
    		}
 
+  //  		var resetReady = () =>{
+		// 	console.log('ready reset!!!!');
+		// 	fs.writeFile('JavatoNode.json', '{"Ready":0.0}', (err) => {
+
+		// 	  		if (err) throw err;
+		// 			  console.log('WAIT TEXT!');
+		// 	  });
+		// }
+
+		// Intialize the NodetoJava.txt at WAIT
+   			fs.writeFile('NodetoJava.txt', 'WAIT', (err) => {
+
+				  		if (err) throw err;
+						  console.log('WAIT TEXT!');
+				  });
+
    		// check if all API calls have returned
 		setInterval(()=>{
    			// console.log(balanceDone);
@@ -229,38 +238,59 @@
 				fs.writeFile('NodetoJava.txt', 'OKAY', (err) => {
 
 			  		if (err) throw err;
-					  console.log('OKAY TEXT DONE!');
+					console.log('OKAY TEXT DONE!');
+					balanceDone = !balanceDone;
+					CFDone = !CFDone;
+					incDone = !incDone;
+					ratioDone =!ratioDone;
 				});
 				  
    			}
    			
-   		}, 1500)
+   		}, 2000)
 
-		// See if Java calculator has returned 
+
+		// See if JavatoNode.json is ready
    		setInterval(()=>{
 	   		fs.readFile('JavatoNode.json', 'utf8', function (err, data) {
-				  if (err) throw err;
+				  if (err){
+				  	console.log(JSON.stringify(data));
+				  	throw err;
+				  } 
 				  obj = JSON.parse(data);
 				  console.log('Ready: ' + obj.Ready);
-				  if(obj.Ready === 1.0){
-				  	//   console.log('Java status: ' + obj.Ready);
-					  // console.log('FCF: ' + obj.FCF);
-					  // console.log('FCFperShare: ' + obj.FCFperShare);
-					  // console.log('E/A: ' + obj.EA);
-					  // console.log('L/A: ' + obj.EA);
-					  // console.log('EPS: ' + obj.EA);
-					  console.log('JtN got!');
-					  setJavaOutput(obj);
-					  fs.writeFile('NodetoJava.txt', 'WAIT', (err) => {
+				  setJavaOutput(obj);
 
-					  		if (err) throw err;
-							  console.log('WAIT TEXT!');
-					  });
+				  // if(obj.Ready === 1.0){
+				  // 	  console.log('Java status: ' + obj.Ready);
+					 //  console.log('FCF: ' + obj.FCF);
+					 //  console.log('FCFperShare: ' + obj.FCFperShare);
+					 //  console.log('E/A: ' + obj.EA);
+					 //  console.log('L/A: ' + obj.EA);
+					 //  console.log('EPS: ' + obj.EA);
+					 //  console.log('JtN got!');
+					 //  setJavaOutput(obj);
+					 //  fs.writeFile('NodetoJava.txt', 'WAIT', (err) => {
 
-				  }
+					 //  		if (err) throw err;
+						// 	  console.log('WAIT TEXT!');
+
+						// 			fs.writeFile('JavatoNode.json', '{"Ready":0.0}', (err) => {
+
+						// 			  		if (err) throw err;
+						// 					  console.log('WAIT TEXT!');
+						// 			  });
+					 //  });
+
+
+
+				  // }
 
 			});
+			// resetReady();
 		}, 2000);
+
+
 
  
 
