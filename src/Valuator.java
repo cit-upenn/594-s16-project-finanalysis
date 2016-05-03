@@ -19,21 +19,23 @@ public class Valuator {
 	}
 	
 	public double getFCF(){
-//		System.out.println(cfs.get("OCF").get(year));
-//		System.out.println(balance.get("PPE").get(year));
-		double fcf = cfs.get("OCF").get(year)-balance.get("PPE").get(year);
+		double fcf = 0;
+		if(cfs.containsKey("OCF") && balance.containsKey("PPE")){
+			 fcf = cfs.get("OCF").get(year)-balance.get("PPE").get(year);
+
+		}
 		System.out.println("FCF: " + fcf);
 		return fcf;
 	}
 	
 	public double getFCFperShare(){
 		double fcfps = 0;
-		if(income.containsKey("Shares")){
+		if(income.containsKey("Shares")&& cfs.containsKey("OCF")){
 			fcfps = (cfs.get("OCF").get(year)-balance.get("PPE").get(year))/income.get("Shares").get(year);
 			System.out.println("FCF per share: " + fcfps);
-		}else if (income.containsKey("EPS")){
+		}else if (income.containsKey("EPS") && cfs.containsKey("OCF")&& income.containsKey("NetNetIncome")){
 //			In case the company does not report their share numbers...
-			fcfps = (cfs.get("OCF").get(year)-balance.get("PPE").get(year))/(cfs.get("NetIncome").get(year)/income.get("EPS").get(year));
+			fcfps = (cfs.get("OCF").get(year)-balance.get("PPE").get(year))/(income.get("NetIncome").get(year)/income.get("EPS").get(year));
 		}
 		return fcfps;
 	}
@@ -70,7 +72,7 @@ public class Valuator {
 		if(income.containsKey("Shares")){
 			return balance.get("Equity").get(year)/income.get("Shares").get(year);
 		} else if (income.containsKey("EPS")){
-			return balance.get("Equity").get(year)/(cfs.get("NetIncome").get(year)/income.get("EPS").get(year));
+			return balance.get("Equity").get(year)/(income.get("NetIncome").get(year)/income.get("EPS").get(year));
 		}
 		return 0.0;
 	}
@@ -81,6 +83,21 @@ public class Valuator {
 	
 	public Map<String, Double> getJSON(){
 		Map<String, Double> json = new HashMap<String, Double>();
+//		some error handling for display
+		if(!balance.containsKey("Company") ){
+			json.put("MissingBalanceSheet!", 0.0);
+			return json;
+		} else if(!cfs.containsKey("Company")){
+			json.put("MissingCashFlowStatement!", 0.0);
+			return json;
+		}else if(!income.containsKey("Company")){
+			json.put("MissingIncomeStatement!", 0.0);
+			return json;
+		}else if(balance.containsKey("APILimitReached")||income.containsKey("APILimitReached")||cfs.containsKey("APILimitReached")){
+			json.put("APILimitReached!!!", 0.0);
+			return json;
+		}
+		
 		json.put("Ready", 1.0);
 		json.put("FCF", getFCF());
 		json.put("FCFperShare", getFCFperShare());

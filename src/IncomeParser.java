@@ -93,7 +93,10 @@ public class IncomeParser {
 		incdat.beginObject();
 	     while (incdat.hasNext()) {
 	    	 String name = incdat.nextName();
-	    	if (name.equals("SalesRevenueNet")) {
+	    	if(name.equals("NetIncomeLoss")) {
+		      buildFinData("NetIncome", incdat.nextDouble(), year);
+
+	       }else if (name.equals("SalesRevenueNet")) {
 			  buildFinData("SalesRevenueNet", incdat.nextDouble(), year);
 
 //	         finData.put("SalesRevenueNet", incdat.nextDouble());

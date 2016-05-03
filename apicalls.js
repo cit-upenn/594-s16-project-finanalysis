@@ -6,12 +6,9 @@
 	var CFDone = false;
 	var incDone = false;
 	var ratioDone = false;
-	// var ticker = '';
 	JavatoNode = new Object;
 
-	// var getTicker = ()=>{
-	// 	return ticker;
-	// }
+
 
 	// var test = () =>{
 	// 	console.log('this is just a long test string');
@@ -55,9 +52,6 @@
 		};
 
 
-	// make ticker a variable based on request from something else
-	// var ticker = 'FB';
-
     var params = {
         	// Request parameters
 	        "formType": "10-K",
@@ -78,36 +72,7 @@
    		};
    		return koolObj;
    	}
-  //   var getBalance = {
-		// 	hostname: "services.last10k.com",
-		// 	path: '/v1/company/' + ticker + '/balancesheet?',
-		// 	method: 'GET',
-		// 	headers: header,
-		// 	qs: params,
-		// };
-
-  //   var getCF = {
-		// 	hostname: "services.last10k.com",
-		// 	path: '/v1/company/' + ticker + '/cashflows?',
-		// 	method: 'GET',
-		// 	headers: header,
-		// 	qs: params,
-		// };
-
-  //   var getInc = {
-		// 	hostname: "services.last10k.com",
-		// 	path: '/v1/company/' + ticker + '/income?',
-		// 	method: 'GET',
-		// 	headers: header,
-		// 	qs: params,
-		// };
-
-  //  var getRatio = {
-		// 	hostname: "services.last10k.com",
-		// 	path: '/v1/company/' + ticker + '/ratios?',
-		// 	method: 'GET',
-		// 	headers: header,
-		// };
+ 
 
 	var writeBalance =(response)=> {
 		  var str = '';
@@ -190,11 +155,6 @@
 		var r = (getRatio, writeRatio) =>{https.request(getRatio, writeRatio).end(); }
 
 
-				// b();
-		  //  		c();
-		  //  		i();
-		  //  		r();
-
    		var makeCalls = (getBalance,getCF,getInc,getRatio ) =>{
    			// console.log('Making the calls! Ticker is ' + ticker);
 			   	b(getBalance, writeBalance);
@@ -203,21 +163,13 @@
 		   		r(getRatio, writeRatio);
    		}
 
-  //  		var resetReady = () =>{
-		// 	console.log('ready reset!!!!');
-		// 	fs.writeFile('JavatoNode.json', '{"Ready":0.0}', (err) => {
-
-		// 	  		if (err) throw err;
-		// 			  console.log('WAIT TEXT!');
-		// 	  });
-		// }
 
 		// Intialize the NodetoJava.txt at WAIT
-   			fs.writeFile('NodetoJava.txt', 'WAIT', (err) => {
+		fs.writeFile('NodetoJava.txt', 'WAIT', (err) => {
 
-				  		if (err) throw err;
-						  console.log('WAIT TEXT!');
-				  });
+		  		if (err) throw err;
+				  console.log('WAIT TEXT!');
+		  });
 
    		// check if all API calls have returned
 		setInterval(()=>{
@@ -254,10 +206,17 @@
    		setInterval(()=>{
 	   		fs.readFile('JavatoNode.json', 'utf8', function (err, data) {
 				  if (err){
-				  	console.log(JSON.stringify(data));
 				  	throw err;
 				  } 
-				  obj = JSON.parse(data);
+				  // console.log('This is JavatoNode: ' +JSON.stringify(data));
+				  // sometimes the JSON parse goes bad, so wrapped in try catch blocks
+				   try {
+						  obj = JSON.parse(data);
+					  } catch (e) {
+
+					  	console.log('BAD JSON!!');
+						} 
+				  
 				  console.log('Ready: ' + obj.Ready);
 				  setJavaOutput(obj);
 
@@ -270,24 +229,28 @@
 					 //  console.log('EPS: ' + obj.EA);
 					 //  console.log('JtN got!');
 					 //  setJavaOutput(obj);
-					 //  fs.writeFile('NodetoJava.txt', 'WAIT', (err) => {
+					 //  // fs.writeFile('NodetoJava.txt', 'WAIT', (err) => {
 
-					 //  		if (err) throw err;
-						// 	  console.log('WAIT TEXT!');
+					 //  // 		if (err) throw err;
+						// 	//   console.log('WAIT TEXT!');
 
-						// 			fs.writeFile('JavatoNode.json', '{"Ready":0.0}', (err) => {
+						// 	// 		fs.writeFile('JavatoNode.json', '{"Ready":0.0}', (err) => {
 
-						// 			  		if (err) throw err;
-						// 					  console.log('WAIT TEXT!');
-						// 			  });
-					 //  });
+						// 	// 		  		if (err) throw err;
+						// 	// 				  console.log('WAIT TEXT!');
+						// 	// 		  });
+					 //  // });
+					 //  fs.writeFile('JavatoNode.json', '{"Ready":0.0}', (err) => {
 
+						//   		if (err) throw err;
+						// 		  console.log('WAIT TEXT!');
+						//   });
 
 
 				  // }
 
 			});
-			// resetReady();
+			
 		}, 2000);
 
 

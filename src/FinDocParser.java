@@ -26,6 +26,8 @@ public class FinDocParser {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				buildFinData("MissingBalanceSheet", 0.0,year);
+
 			}
 		 }else if(document == 1){
 			 try {
@@ -33,13 +35,15 @@ public class FinDocParser {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+				buildFinData("MissingCashFlowStatement", 0.0,year);
+			} 
 		 }else if(document == 2){
 			 try {
 				readIncome(jsRead);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				buildFinData("MissingIncomeStatement", 0.0,year);
 			}
 		 }
 		 
@@ -67,23 +71,31 @@ public class FinDocParser {
 	
 	public void readBalance(JsonReader balance)throws IOException{
 //		 parse method from gson javadoc
-		
-		balance.beginObject();
-	     while (balance.hasNext()) {
-	       String name = balance.nextName();
-	       if (name.equals("Company")) {
-	         company = balance.nextString();
-	         System.out.println("Company: " + company);
-	       } else if(name.equals("Status")){
-	    	   year = balance.nextInt();
-	       }else if(name.equals("Data")){
-	    	   parseBalData(balance);
-	       } else{
-	    	   balance.skipValue();
-	       }
-	     }
-	     balance.endObject();
-	    		   
+		 try{
+			balance.beginObject();
+		     while (balance.hasNext()) {
+		    	 String name =balance.nextName();;
+		       
+	//	       for error display later 
+		       if (name.equals("Company")) {
+		         company = balance.nextString();
+		         buildFinData("Company", 1.0, year);
+		         System.out.println("Company: " + company);
+		       } else if(name.equals("Status")){
+		    	   year = balance.nextInt();
+		       }else if(name.equals("Data")){
+		    	   parseBalData(balance);
+		       } else if(name.equals("statusCode")){
+		    	   buildFinData("APILimitReached", 1.0, year);
+		       }else{
+		    	   balance.skipValue();
+		       }
+		     }
+		     balance.endObject();
+	     }catch(java.lang.IllegalStateException e){
+	    		 System.out.println("RATE LIMIT EXCEEDED");
+	    		 buildFinData("APILimitReached", 1.0, year);
+	    	 }	   
 
 		
 	}
@@ -128,21 +140,33 @@ public class FinDocParser {
 	}
 	
 	public void readCF(JsonReader cf)throws IOException{
-		cf.beginObject();
-	     while (cf.hasNext()) {
-	       String name = cf.nextName();
-	       if (name.equals("Company")) {
-	         company = cf.nextString();
-	         System.out.println("Company: " + company);
-	       } else if(name.equals("Status")){
-	    	   year = cf.nextInt();
-	       }else if(name.equals("Data")){
-	    	   parseCFData(cf);
-	       } else{
-	    	   cf.skipValue();
-	       }
-	     }
-	     cf.endObject();
+		 try{
+			 cf.beginObject();
+			     while (cf.hasNext()) {
+			    	 String name =cf.nextName();;
+			       
+		//	       for error display later 
+			       if (name.equals("Company")) {
+			         company = cf.nextString();
+			         buildFinData("Company", 1.0, year);
+			         System.out.println("Company: " + company);
+			       } else if(name.equals("Status")){
+			    	   year = cf.nextInt();
+			       }else if(name.equals("Data")){
+			    	   parseCFData(cf);
+			       } else if(name.equals("statusCode")){
+			    	   buildFinData("APILimitReached", 1.0, year);
+			       }else{
+			    	   cf.skipValue();
+			       }
+			     }
+			     cf.endObject();
+		     }catch(java.lang.IllegalStateException e){
+//		    	 if(balance.nextName()== null){
+		    		 System.out.println("RATE LIMIT EXCEEDED");
+		    		 buildFinData("APILimitReached", 1.0, year);
+		    	 }	   
+
 		
 	}
 	
@@ -185,21 +209,32 @@ public class FinDocParser {
 	
 	
 	public void readIncome(JsonReader inc)throws IOException{
-		inc.beginObject();
-	     while (inc.hasNext()) {
-	       String name = inc.nextName();
-	       if (name.equals("Company")) {
-	         company = inc.nextString();
-	         System.out.println("Company: " + company);
-	       }  else if(name.equals("Status")){
-	    	   year = inc.nextInt();
-	       }else if(name.equals("Data")){
-	    	   parseIncData(inc);
-	       } else{
-	    	   inc.skipValue();
-	       }
-	     }
-	     inc.endObject();
+		 try{
+			 inc.beginObject();
+			     while (inc.hasNext()) {
+			    	 String name =inc.nextName();;
+			       
+		//	       for error display later 
+			       if (name.equals("Company")) {
+			         company = inc.nextString();
+			         buildFinData("Company", 1.0, year);
+			         System.out.println("Company: " + company);
+			       } else if(name.equals("Status")){
+			    	   year = inc.nextInt();
+			       }else if(name.equals("Data")){
+			    	   parseIncData(inc);
+			       } else if(name.equals("statusCode")){
+			    	   buildFinData("APILimitReached", 1.0, year);
+			       }else{
+			    	   inc.skipValue();
+			       }
+			     }
+			     inc.endObject();
+		     }catch(java.lang.IllegalStateException e){
+//		    	 if(balance.nextName()== null){
+		    		 System.out.println("RATE LIMIT EXCEEDED");
+		    		 buildFinData("APILimitReached", 1.0, year);
+		    	 }	   
 		
 	}
 	
@@ -207,7 +242,10 @@ public class FinDocParser {
 		incdat.beginObject();
 	     while (incdat.hasNext()) {
 	    	 String name = incdat.nextName();
-	    	if (name.equals("SalesRevenueNet")) {
+	    	if(name.equals("NetIncomeLoss")) {
+		      buildFinData("NetIncome", incdat.nextDouble(), year);
+
+	       }else if (name.equals("SalesRevenueNet")) {
 			  buildFinData("SalesRevenueNet", incdat.nextDouble(), year);
 
 //	         finData.put("SalesRevenueNet", incdat.nextDouble());
@@ -229,7 +267,6 @@ public class FinDocParser {
 	       } else if (name.equals("OperatingIncomeLoss")) {
 				  buildFinData("OperatingIncome", incdat.nextDouble(), year);
 
-//	         finData.put("OperatingIncome", incdat.nextDouble());
 	         System.out.println("OperatingIncomeLoss: " + finData.get("OperatingIncome").get(year));
 	       } else if (name.equals("EarningsPerShareBasic")) {
 				  buildFinData("EPS", incdat.nextDouble(), year);
