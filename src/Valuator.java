@@ -1,7 +1,14 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
+/**
+ * This class gets the financial data and calculates the important ratios and the 
+ * target price
+ * @author weiyinko
+ *
+ */
 public class Valuator {
 	private HashMap<String, ArrayList<Double>> balance;
 	private HashMap<String, ArrayList<Double>> cfs;
@@ -82,7 +89,8 @@ public class Valuator {
 	}
 	
 	public Map<String, Double> getJSON(){
-		Map<String, Double> json = new HashMap<String, Double>();
+//		I wanted some ordering in the JSON presented so TreeMap is used
+		Map<String, Double> json = new TreeMap<String, Double>();
 //		some error handling for display
 		if(!balance.containsKey("Company") ){
 			json.put("MissingBalanceSheet!", 0.0);
@@ -98,13 +106,13 @@ public class Valuator {
 			return json;
 		}
 		
-		json.put("Ready", 1.0);
-		json.put("FCF", getFCF());
-		json.put("FCFperShare", getFCFperShare());
-		json.put("EA", getEA());
-		json.put("LA", getLA());
-		json.put("EPS", getEPS());
-		json.put("Target Price", getTargetPrice());
+//		json.put("Ready", 1.0);
+		json.put("6:FCF", getFCF());
+		json.put("3:FCFperShare", getFCFperShare());
+		json.put("5:EA", getEA());
+		json.put("4:LA", getLA());
+		json.put("2:EPS", getEPS());
+		json.put("1:Target Price", getTargetPrice());
 
 		return json;
 	}

@@ -9,13 +9,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
-import java.util.concurrent.locks.ReentrantLock;
 
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 
+/**
+ * The NodeCommunicator class runs in intervals to communicate with the Node.js codes.
+ * It waits for a start message and periodically ultilizes the FinDocParser and Valuator
+ * to interpret the JSONs and send a JSON back to Node. It utilizes the Singleton pattern.
+ * @author weiyin
+ *
+ */
 public class NodeCommunicator extends TimerTask implements Runnable{
-//	private ReentrantLock myLock;
 	private boolean decision;
 	private String text;
 	private HashMap<String, Double> content;
@@ -25,44 +29,60 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 	private String json;
 	private static NodeCommunicator comm;
 	ArrayList<FinDocParser> docs;
-
+	FinDocFactory balFac;
+	FinDocFactory cfFac;
+	FinDocFactory incFac;
 
 	
 	
 	/**
-	 * The constructor for NodeCommunicator. It takes in an ArrayList of documents and 
-	 * a txt doc that tells it to start/stop the JSON-making.
-	 * @param docs the parsed financial docs
+	 * The constructor for NodeCommunicator. It takes in a txt doc that tells it 
+	 * to start the JSON-making.
 	 * @param text a text file that tells the communicator to start/stop parsing
 	 * @throws FileNotFoundException
 	 */
 	private NodeCommunicator(String text) throws FileNotFoundException{
 		this.gson = new Gson();
 		this.text = text;
-//		this.myLock = new ReentrantLock();
-
+		this.balFac = new BalanceFactory();
+		this.cfFac = new CashFlowFactory();
+		this.incFac = new IncomeFactory();
 		this.content = new HashMap<String, Double>();
 		content.put("Ready", 0.0);
 		this.json = gson.toJson(content);;
 		this.docs = new ArrayList<FinDocParser>();
 
 	}
-	
+	/**
+	 * the method for getting the single NodeCommunicator instance. As a scheduler there
+	 * is no reason to have more than one instance.
+	 * @param text
+	 * @return
+	 * @throws FileNotFoundException
+	 */
 	public synchronized static NodeCommunicator getInstance(String text) throws FileNotFoundException{
 		if(comm == null){
 			comm = new NodeCommunicator( text);
 		}
 		return comm;
 	}
+	/**
+	 * The thread starts by creating new instances of the I/O and the Factories to
+	 * ensure the json data is refreshed. It then determines whether to parse the JSONs
+	 * or not, and outputs the message back to Node in JSON form once analysis is complete
+	 * 
+	 */
 	@Override
 	public synchronized void run() {
 		try {
-//				System.out.println("in try!");
+//				2 PrintWriters to deal with 2 possibilities of output. Makes things simpler
 				this.out = new PrintWriter(new FileOutputStream("JavatoNode.json", false));
 				this.out2 = new PrintWriter(new FileOutputStream("JavatoNode.json", false));
-				FinDocParser jbal = new FinDocParser(new File("balance.json"), 0);
-				FinDocParser jcf = new FinDocParser(new File("CashFlow.json"), 1);
-				FinDocParser jinc = new FinDocParser(new File("Income.json"), 2);
+//				parsers are generated from the factories
+				FinDocParser jbal = balFac.makeFinDoc("balance.json");
+				FinDocParser jcf = cfFac.makeFinDoc("CashFlow.json");
+				FinDocParser jinc = incFac.makeFinDoc("Income.json");
+
 				File file = new File(text);
 				BufferedReader in = new BufferedReader(new FileReader(file));
 				while (in.lines() != null) {
@@ -122,9 +142,6 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 		}
 	}
 	
-//	public void checkStatus(){
-////		content = "{\"status\": true}";
-//	}
 	
 	/**
 	 * This method gets the decision boolean, which determines whether parsing happens
@@ -136,6 +153,10 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 		return decision;
 	}
 	
+	/**
+	 * This method sets the output that will be written as a JSON
+	 * @param valuation The Map of various valuation metrics
+	 */
 	private void setOutput(Map<String, Double> valuation){
 		json = gson.toJson(valuation);
 		
