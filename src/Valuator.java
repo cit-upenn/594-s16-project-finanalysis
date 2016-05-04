@@ -94,7 +94,7 @@ public class Valuator {
 		double target = 0.0;
 		double growth = 0.0;
 		if(ratio.containsKey("EPS") && ratio.containsKey("AvgEPS")){
-			growth = (ratio.get("EPS").get(year)-ratio.get("AvgEPS").get(year))/ratio.get("AvgEPS").get(year);
+			growth = 1 + ((ratio.get("EPS").get(year)-ratio.get("AvgEPS").get(year))/ratio.get("AvgEPS").get(year));
 		}
 				
 		System.out.println("AvgEPS: " + ratio.get("AvgEPS").get(year));
@@ -107,7 +107,11 @@ public class Valuator {
 		return target;
 	}
 	
-
+	private double Rounder(double number){
+		double rounded = Math.round(number*100.0)/100.0;
+		
+		return rounded;
+	}
 	
 	
 	
@@ -133,14 +137,14 @@ public class Valuator {
 		}
 		
 		json.put("6|FCF ", getFCF());
-		json.put("3|FCF/Share ", getFCFperShare());
+		json.put("3|FCF/Share ", Rounder(getFCFperShare()));
 		if(getEA() > 0 && getLA() > 0){
-			json.put("4|E/D ", getEA()/getLA());
+			json.put("4|E/D ", Rounder(getEA()/getLA()));
 		}
-		json.put("5|Equity/Share ",  getEquityShare());
+		json.put("5|Equity/Share ",  Rounder(getEquityShare()));
 		
 		json.put("2|EPS ", getEPS());
-		json.put("1|Target Book Price ", getTargetPrice());
+		json.put("1|Target Book Price ", Rounder(getTargetPrice()));
 		
 		System.out.println("6|FCF " + getFCF());
 		System.out.println("3|FCFperShare " + getFCFperShare());

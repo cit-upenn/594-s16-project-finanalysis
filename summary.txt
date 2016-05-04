@@ -1,0 +1,21 @@
+FinDocAnalyzer (working title) by Wei-Yin Ko
+=================================================
+This web program lets you enter a ticker symbol, press search, and some key metrics for the company should pop up. That is, assuming that the API did not
+make one of the many, many restrictions that is has or hit the call limit. When the "Search Company" button is pressed, a POST message is send to server.js
+and apicalls.js is called to make API calls provided by dev.last10k.com to get the relevant financial statements in JSON format. Meanwhile NodeCommunicator
+is running in intervals in Java, and when all the calls are made an OKAY message is written to a text file which NodeCommunicator reads. Once it gets the
+notice it will parse the JSONs using readers provided by the GSON jar. The values are then constructed into various HashMaps by the respective FinDocParsers.
+The HashMaps are then used to construct a Valuator that calculates the metrics and/or write our errors encountered in JavatoNode.json. This json is then
+parsed by apicalls.js which is then sent back to display on index.html via a server GET request. Unfortunately the APIs are not very reliant and has harsh
+limits(5 calls per minute!) so oftentimes you will see the encountered error on the html page instead.The analyses that could be done is also limited by
+the restrictions from the APIs too so accuracy and the metrics I could come up with are also limited. With that being said, It has been interesting to see
+how all the tech companies' stocks are being traded wayyyyy above their book value, and the fact that all I have to do to compare those numbers is just
+typing their tickers in has been really convienent.
+
+I did every part of this project. For the search box I used a very simplified version of React form-making template from here: 
+http://jamesknelson.com/learn-raw-react-ridiculously-simple-forms/
+
+Github link: https://github.com/cit-upenn/594-s16-project-finanalysis
+
+Assuming that I did not deploy to Heroku in time, If you clone the repo you will have to install Node.js and its modules via npm. I accidently pulled too many 
+unnessasary modules into the project so uh, the download might be a bit slow...

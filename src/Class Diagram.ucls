@@ -3,7 +3,7 @@
   associations="true" dependencies="true" nesting-relationships="true" router="FAN">  
   <class id="1" language="java" name="BalanceFactory" project="594 Homework 6 Project" 
     file="/594 Homework 6 Project/src/BalanceFactory.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="570" y="798"/>    
+    <position height="-1" width="-1" x="789" y="882"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -12,7 +12,7 @@
   </class>  
   <class id="2" language="java" name="CashFlowFactory" project="594 Homework 6 Project" 
     file="/594 Homework 6 Project/src/CashFlowFactory.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1071" y="800"/>    
+    <position height="-1" width="-1" x="1244" y="881"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -21,7 +21,7 @@
   </class>  
   <class id="3" language="java" name="FinDocAnalyzer" project="594 Homework 6 Project" 
     file="/594 Homework 6 Project/src/FinDocAnalyzer.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="99" width="113" x="818" y="37"/>    
+    <position height="99" width="113" x="1130" y="37"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -30,7 +30,7 @@
   </class>  
   <class id="4" language="java" name="FinDocFactory" project="594 Homework 6 Project" 
     file="/594 Homework 6 Project/src/FinDocFactory.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="786" y="657"/>    
+    <position height="-1" width="-1" x="996" y="608"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -39,7 +39,7 @@
   </class>  
   <class id="5" language="java" name="FinDocParser" project="594 Homework 6 Project" 
     file="/594 Homework 6 Project/src/FinDocParser.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="859" y="1097"/>    
+    <position height="-1" width="-1" x="1266" y="1288"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -48,7 +48,7 @@
   </class>  
   <class id="6" language="java" name="IncomeFactory" project="594 Homework 6 Project" 
     file="/594 Homework 6 Project/src/IncomeFactory.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="838" y="800"/>    
+    <position height="-1" width="-1" x="1037" y="882"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -57,7 +57,7 @@
   </class>  
   <class id="7" language="java" name="NodeCommunicator" project="594 Homework 6 Project" 
     file="/594 Homework 6 Project/src/NodeCommunicator.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="279" width="214" x="818" y="176"/>    
+    <position height="297" width="214" x="1130" y="176"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -66,108 +66,129 @@
   </class>  
   <class id="8" language="java" name="Valuator" project="594 Homework 6 Project" 
     file="/594 Homework 6 Project/src/Valuator.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="325" y="320"/>    
+    <position height="-1" width="-1" x="445" y="377"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <association id="9">    
-    <bendpoint x="700" y="551"/>    
+  <class id="9" language="java" name="RatioFactory" project="594 Homework 6 Project" 
+    file="/594 Homework 6 Project/src/RatioFactory.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1452" y="880"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <association id="10">    
+    <bendpoint x="922" y="521"/>    
     <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="10" name="balFac"/>      
-      <multiplicity id="11" minimum="0" maximum="1"/>    
+      <attribute id="11" name="balFac"/>      
+      <multiplicity id="12" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="12">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="4"/>  
-  </generalization>  
   <generalization id="13">    
-    <end type="SOURCE" refId="6"/>    
+    <end type="SOURCE" refId="9"/>    
     <end type="TARGET" refId="4"/>  
   </generalization>  
   <generalization id="14">    
-    <bendpoint x="926" y="692"/>    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="4"/>  
+  </generalization>  
+  <generalization id="15">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="4"/>  
+  </generalization>  
+  <generalization id="16">    
     <end type="SOURCE" refId="2"/>    
     <end type="TARGET" refId="4"/>  
   </generalization>  
-  <association id="15">    
-    <bendpoint x="1189" y="505"/>    
-    <bendpoint x="1189" y="842"/>    
+  <association id="17">    
+    <bendpoint x="1597" y="523"/>    
+    <bendpoint x="1597" y="878"/>    
     <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="16" name="docs"/>      
-      <multiplicity id="17" minimum="0" maximum="2147483647"/>    
+      <attribute id="18" name="docs"/>      
+      <multiplicity id="19" minimum="0" maximum="2147483647"/>    
     </end>    
     <end type="TARGET" refId="5" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="18">    
-    <bendpoint x="821" y="543"/>    
+  <association id="20">    
+    <bendpoint x="1022" y="516"/>    
     <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="19" name="incFac"/>      
-      <multiplicity id="20" minimum="0" maximum="1"/>    
+      <attribute id="21" name="incFac"/>      
+      <multiplicity id="22" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <dependency id="21">    
-    <bendpoint x="700" y="505"/>    
+  <dependency id="23">    
+    <bendpoint x="880" y="523"/>    
     <end type="SOURCE" refId="7"/>    
     <end type="TARGET" refId="1"/>  
   </dependency>  
-  <dependency id="22">    
+  <dependency id="24">    
     <end type="SOURCE" refId="3"/>    
     <end type="TARGET" refId="7"/>  
   </dependency>  
-  <dependency id="23">    
+  <dependency id="25">    
     <end type="SOURCE" refId="6"/>    
     <end type="TARGET" refId="5"/>  
   </dependency>  
-  <dependency id="24">    
-    <bendpoint x="979" y="707"/>    
+  <dependency id="26">    
+    <bendpoint x="1139" y="523"/>    
     <end type="SOURCE" refId="7"/>    
     <end type="TARGET" refId="6"/>  
   </dependency>  
-  <dependency id="25">    
-    <bendpoint x="685" y="797"/>    
+  <dependency id="27">    
+    <bendpoint x="1264" y="523"/>    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="9"/>  
+  </dependency>  
+  <dependency id="28">    
+    <bendpoint x="892" y="878"/>    
     <end type="SOURCE" refId="4"/>    
     <end type="TARGET" refId="5"/>  
   </dependency>  
-  <dependency id="26">    
+  <dependency id="29">    
     <end type="SOURCE" refId="1"/>    
     <end type="TARGET" refId="5"/>  
   </dependency>  
-  <dependency id="27">    
-    <bendpoint x="1032" y="501"/>    
+  <dependency id="30">    
+    <bendpoint x="1160" y="523"/>    
     <end type="SOURCE" refId="7"/>    
     <end type="TARGET" refId="2"/>  
   </dependency>  
-  <association id="28">    
-    <bendpoint x="894" y="580"/>    
+  <association id="31">    
+    <bendpoint x="1110" y="524"/>    
     <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="29" name="cfFac"/>      
-      <multiplicity id="30" minimum="0" maximum="1"/>    
+      <attribute id="32" name="cfFac"/>      
+      <multiplicity id="33" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <dependency id="31">    
+  <dependency id="34">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="35">    
     <end type="SOURCE" refId="2"/>    
     <end type="TARGET" refId="5"/>  
   </dependency>  
-  <association id="32">    
+  <association id="36">    
     <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="33" name="comm"/>      
-      <multiplicity id="34" minimum="0" maximum="1"/>    
+      <attribute id="37" name="comm"/>      
+      <multiplicity id="38" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="7" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <dependency id="35">    
+  <dependency id="39">    
     <end type="SOURCE" refId="7"/>    
     <end type="TARGET" refId="8"/>  
   </dependency>  

@@ -23,13 +23,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-// setTimeout(()=>{
-//   console.log('in timer!');
-//   api.getJavaOutput();
-//     // api.test();
 
-
-// }, 4000);
 
 app.get('/', function (req, res) {
   var output= api.getJavaOutput();

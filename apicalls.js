@@ -178,15 +178,7 @@
    			// console.log(incDone);
    			// console.log(ratioDone);
    			if(	balanceDone === true &&  CFDone === true &&  incDone === true &&  ratioDone === true){
-   				// console.log('all true!');
-   				// check = '{"check": "OK"}'
 
-   	// 			fs.writeFile('check.json', check, (err) => {
-
-			 //  		if (err) throw err;
-				// 	  console.log('OKAY JSON DONE!');
-				// 	  // ratioDone = !ratioDone;
-				// });
 				fs.writeFile('NodetoJava.txt', 'OKAY', (err) => {
 
 			  		if (err) throw err;
@@ -220,34 +212,6 @@
 				  console.log('Ready: ' + obj.Ready);
 				  setJavaOutput(obj);
 
-				  // if(obj.Ready === 1.0){
-				  // 	  console.log('Java status: ' + obj.Ready);
-					 //  console.log('FCF: ' + obj.FCF);
-					 //  console.log('FCFperShare: ' + obj.FCFperShare);
-					 //  console.log('E/A: ' + obj.EA);
-					 //  console.log('L/A: ' + obj.EA);
-					 //  console.log('EPS: ' + obj.EA);
-					 //  console.log('JtN got!');
-					 //  setJavaOutput(obj);
-					 //  // fs.writeFile('NodetoJava.txt', 'WAIT', (err) => {
-
-					 //  // 		if (err) throw err;
-						// 	//   console.log('WAIT TEXT!');
-
-						// 	// 		fs.writeFile('JavatoNode.json', '{"Ready":0.0}', (err) => {
-
-						// 	// 		  		if (err) throw err;
-						// 	// 				  console.log('WAIT TEXT!');
-						// 	// 		  });
-					 //  // });
-					 //  fs.writeFile('JavatoNode.json', '{"Ready":0.0}', (err) => {
-
-						//   		if (err) throw err;
-						// 		  console.log('WAIT TEXT!');
-						//   });
-
-
-				  // }
 
 			});
 			
