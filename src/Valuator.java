@@ -13,23 +13,21 @@ public class Valuator {
 	private HashMap<String, ArrayList<Double>> balance;
 	private HashMap<String, ArrayList<Double>> cfs;
 	private HashMap<String, ArrayList<Double>> income;
+	private HashMap<String, ArrayList<Double>> ratio;
 	private int year;
-	public Valuator(HashMap<String, ArrayList<Double>> balance, HashMap<String, ArrayList<Double>> cfs, HashMap<String, ArrayList<Double>> income, int year){
-		this.balance = new HashMap<String, ArrayList<Double>>();
-		this.cfs = new HashMap<String, ArrayList<Double>>();
-		this.income = new HashMap<String, ArrayList<Double>>();
+	public Valuator(HashMap<String, ArrayList<Double>> balance, HashMap<String, ArrayList<Double>> cfs, HashMap<String, ArrayList<Double>> income, HashMap<String, ArrayList<Double>> ratio, int year){
 		this.balance = balance;
 		this.cfs = cfs;
 		this.income = income;
+		this.ratio = ratio;
 		this.year = year;
 		
 	}
 	
 	public double getFCF(){
 		double fcf = 0;
-		if(cfs.containsKey("OCF") && balance.containsKey("PPE")){
-			 fcf = cfs.get("OCF").get(year)-balance.get("PPE").get(year);
-
+		if(ratio.containsKey("FCF")){
+			 fcf = ratio.get("FCF").get(year);
 		}
 		System.out.println("FCF: " + fcf);
 		return fcf;
@@ -37,8 +35,11 @@ public class Valuator {
 	
 	public double getFCFperShare(){
 		double fcfps = 0;
-		if(income.containsKey("Shares")&& cfs.containsKey("OCF")){
-			fcfps = (cfs.get("OCF").get(year)-balance.get("PPE").get(year))/income.get("Shares").get(year);
+		if(income.containsKey("Shares")&& ratio.containsKey("FCF")){
+			fcfps = ratio.get("FCF").get(year)/income.get("Shares").get(year);
+			System.out.println("FCF per share: " + fcfps);
+		}else if (ratio.containsKey("Shares")&& ratio.containsKey("FCF")){
+			fcfps = ratio.get("FCF").get(year)/ratio.get("FCF").get(year);
 			System.out.println("FCF per share: " + fcfps);
 		}else if (income.containsKey("EPS") && cfs.containsKey("OCF")&& income.containsKey("NetNetIncome")){
 //			In case the company does not report their share numbers...
@@ -69,30 +70,55 @@ public class Valuator {
 	public double getEPS(){
 		if(income.containsKey("EPS")){
 			return income.get("EPS").get(year);
+		}else if(ratio.containsKey("EPS")){
+			return ratio.get("EPS").get(year);
 		}else{
 			return 0.0;
 		}
 		
 	}
 	
-	public double getCurrentPrice(){
-		if(income.containsKey("Shares")){
-			return balance.get("Equity").get(year)/income.get("Shares").get(year);
+	public double getEquityShare(){
+		if(ratio.containsKey("Equity%") && ratio.containsKey("Shares")&& balance.containsKey("Assets")){
+			double es = (balance.get("Assets").get(year)*ratio.get("Equity%").get(year))/ratio.get("Shares").get(year);
+			return es;
 		} else if (income.containsKey("EPS")){
 			return balance.get("Equity").get(year)/(income.get("NetIncome").get(year)/income.get("EPS").get(year));
+		} else if (income.containsKey("Shares")){
+			return balance.get("Equity").get(year)/income.get("Shares").get(year);
 		}
 		return 0.0;
 	}
 	
 	public double getTargetPrice(){
-		return getFCFperShare()*getCurrentPrice();
+		double target = 0.0;
+		double growth = 0.0;
+		if(ratio.containsKey("EPS") && ratio.containsKey("AvgEPS")){
+			growth = (ratio.get("EPS").get(year)-ratio.get("AvgEPS").get(year))/ratio.get("AvgEPS").get(year);
+		}
+				
+		System.out.println("AvgEPS: " + ratio.get("AvgEPS").get(year));
+
+		System.out.println("Growth: " + growth);
+		if(getEquityShare() > 0){
+			target = growth * getEquityShare();
+		}
+		
+		return target;
 	}
+	
+
+	
+	
 	
 	public Map<String, Double> getJSON(){
 //		I wanted some ordering in the JSON presented so TreeMap is used
 		Map<String, Double> json = new TreeMap<String, Double>();
 //		some error handling for display
-		if(!balance.containsKey("Company") ){
+		if(balance.containsKey("APILimitReached")||income.containsKey("APILimitReached")||cfs.containsKey("APILimitReached")){
+			json.put("APILimitReached!!!", 0.0);
+			return json;
+		}else if(!balance.containsKey("Company") ){
 			json.put("MissingBalanceSheet!", 0.0);
 			return json;
 		} else if(!cfs.containsKey("Company")){
@@ -101,18 +127,25 @@ public class Valuator {
 		}else if(!income.containsKey("Company")){
 			json.put("MissingIncomeStatement!", 0.0);
 			return json;
-		}else if(balance.containsKey("APILimitReached")||income.containsKey("APILimitReached")||cfs.containsKey("APILimitReached")){
-			json.put("APILimitReached!!!", 0.0);
+		}else if(!ratio.containsKey("Company")){
+			json.put("MissingRatios!", 0.0);
 			return json;
 		}
 		
-//		json.put("Ready", 1.0);
-		json.put("6:FCF", getFCF());
-		json.put("3:FCFperShare", getFCFperShare());
-		json.put("5:EA", getEA());
-		json.put("4:LA", getLA());
-		json.put("2:EPS", getEPS());
-		json.put("1:Target Price", getTargetPrice());
+		json.put("6|FCF ", getFCF());
+		json.put("3|FCF/Share ", getFCFperShare());
+		if(getEA() > 0 && getLA() > 0){
+			json.put("4|E/D ", getEA()/getLA());
+		}
+		json.put("5|Equity/Share ",  getEquityShare());
+		
+		json.put("2|EPS ", getEPS());
+		json.put("1|Target Book Price ", getTargetPrice());
+		
+		System.out.println("6|FCF " + getFCF());
+		System.out.println("3|FCFperShare " + getFCFperShare());
+		System.out.println("2|EPS " + getEPS());
+		System.out.println("1|Target Book Price " + getTargetPrice());
 
 		return json;
 	}

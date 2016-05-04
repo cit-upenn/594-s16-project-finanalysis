@@ -26,9 +26,7 @@
       setInterval(function() {
         var fin = '';
         var displayJSON =(fin) =>{
-            // console.log('render' + fin);
-            // var number = fin.EPS
-            // var data =  [{EPS: fin.EPS}];
+
             ReactDOM.render(
 
                 <Greeting EPS={JSON.stringify(fin)}/>,
@@ -58,13 +56,12 @@
       var postQuery = (ticker)=>{
         console.log('in post query!')
          $.post( 'http://localhost:3000/',ticker, function( data ) {
-              // data = 'ticker';
               console.log('data sent: ' + data);
             });
 
       }
 
-      // The Ticker search comes from a very simplified version of simple forms template shown here:
+      // The Ticker search box comes from a very simplified version of simple forms template shown here:
       // http://jamesknelson.com/learn-raw-react-ridiculously-simple-forms/
 
       /*
@@ -83,13 +80,6 @@
           this.props.onChange(Object.assign({}, this.props.value, {name: e.target.value}));
         },
         
-        // onEmailChange: function(e) {
-        //   this.props.onChange(Object.assign({}, this.props.value, {email: e.target.value}));
-        // },
-        
-        // onDescriptionChange: function(e) {
-        //   this.props.onChange(Object.assign({}, this.props.value, {description: e.target.value}));
-        // },
 
         onSubmit: function(e) {
           e.preventDefault();
@@ -105,17 +95,6 @@
                 value: this.props.value.name,
                 onChange: this.onNameChange,
               }),
-              // React.createElement('input', {
-              //   type: 'email',
-              //   placeholder: 'Email (required)',
-              //   value: this.props.value.email,
-              //   onChange: this.onEmailChange,
-              // }),
-              // React.createElement('textarea', {
-              //   placeholder: 'Description',
-              //   value: this.props.value.description,
-              //   onChange: this.onDescriptionChange,
-              // }),
               React.createElement('button', {type: 'submit'}, "Search Company")
             )
           );
@@ -134,7 +113,6 @@
           return (
             React.createElement('li', {className: 'ContactItem'},
               React.createElement('h2', {className: 'ContactItem-name'}, this.props.name),
-              // React.createElement('a', {className: 'ContactItem-email', href: 'mailto:'+this.props.email}, this.props.email),
               React.createElement('div', {className: 'ContactItem-description'}, this.props.description)
             )
           );
@@ -157,7 +135,7 @@
 
           return (
             React.createElement('div', {className: 'ContactView'},
-              React.createElement('h1', {className: 'ContactView-title'}, "Company Financials Analyzer Alpha v0.005"),
+              React.createElement('h1', {className: 'ContactView-title'}, "Company Financials Analyzer Alpha v0.007"),
               React.createElement('ul', {className: 'ContactView-list'}, contactItemElements),
               React.createElement(ContactForm, {
                 value: this.props.newContact,
@@ -234,8 +212,7 @@
       // Set initial data
       setState({
         contacts: [
-          {key: 1, name: "James K Nelson",  description: "Front-end Unicorn"},
-          // {key: 2, name: "Jim", email: "jim@example.com"},
+
         ],
         newContact: Object.assign({}, CONTACT_TEMPLATE),
       });

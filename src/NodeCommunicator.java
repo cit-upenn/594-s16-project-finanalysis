@@ -32,6 +32,7 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 	FinDocFactory balFac;
 	FinDocFactory cfFac;
 	FinDocFactory incFac;
+	FinDocFactory ratFac;
 
 	
 	
@@ -47,6 +48,7 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 		this.balFac = new BalanceFactory();
 		this.cfFac = new CashFlowFactory();
 		this.incFac = new IncomeFactory();
+		this.ratFac = new RatioFactory();
 		this.content = new HashMap<String, Double>();
 		content.put("Ready", 0.0);
 		this.json = gson.toJson(content);;
@@ -82,6 +84,7 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 				FinDocParser jbal = balFac.makeFinDoc("balance.json");
 				FinDocParser jcf = cfFac.makeFinDoc("CashFlow.json");
 				FinDocParser jinc = incFac.makeFinDoc("Income.json");
+				FinDocParser jrat = ratFac.makeFinDoc("Ratio.json");
 
 				File file = new File(text);
 				BufferedReader in = new BufferedReader(new FileReader(file));
@@ -97,6 +100,7 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 						docs.add(jbal);
 						docs.add(jcf);
 						docs.add(jinc);
+						docs.add(jrat);
 						System.out.println("OKAY: documents will be parsed!");
 						decision = true;
 						System.out.println("decision-- " + decision);
@@ -111,7 +115,9 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 				if(getDecision() == true){
 					HashMap<String, ArrayList<Double>> balanceData = new HashMap<String, ArrayList<Double>>();
 					HashMap<String, ArrayList<Double>> CFData = new HashMap<String, ArrayList<Double>>();
-					HashMap<String, ArrayList<Double>>incData = new HashMap<String, ArrayList<Double>>();
+					HashMap<String, ArrayList<Double>> incData = new HashMap<String, ArrayList<Double>>();
+					HashMap<String, ArrayList<Double>> ratData = new HashMap<String, ArrayList<Double>>();
+
 					for(int i = 0; i < docs.size(); i++){
 						if(docs.get(i).getDocument() == 0){
 							balanceData = docs.get(i).getFinData();
@@ -122,9 +128,14 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 						}else if (docs.get(i).getDocument() == 2){
 							incData = docs.get(i).getFinData();
 
+						}else if(docs.get(i).getDocument() == 3){
+							ratData = docs.get(i).getFinData();
 						}
 					}
-					Valuator vt0 = new Valuator(balanceData, CFData, incData, 0);
+//					Since it's impossible to make more than 5 calls per minute, only the
+//					most recent year data is used
+					
+					Valuator vt0 = new Valuator(balanceData, CFData, incData,ratData, 0);
 					
 					setOutput(vt0.getJSON());
 					out.println(json);
