@@ -10,9 +10,6 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 
 
-
-// var output;
-
 app.use(function(req, res, next) {
     // Set permissive CORS header - this allows this server to be used only as
     // an API server in conjunction with something like webpack-dev-server.
@@ -24,7 +21,7 @@ app.use(function(req, res, next) {
 });
 
 
-
+// What to do when GET request is received
 app.get('/', function (req, res) {
   var output= api.getJavaOutput();
   console.log('SERVER: sending this: ' + JSON.stringify(output));
@@ -32,6 +29,7 @@ app.get('/', function (req, res) {
 
 });
 
+// What to do when POST request is received
 app.post('/', function (req, res) {
   var query=req.body.name;
   console.log('SERVER: got this: ' + query);

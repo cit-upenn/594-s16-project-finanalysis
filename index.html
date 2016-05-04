@@ -36,9 +36,7 @@
         $.getJSON('http://localhost:3000/', 
           (json)=>{
             console.log('in get!');
-            // fin = JSON.parse(json);
             fin = json;
-            // console.log(fin);
 
             displayJSON(fin);
             
@@ -65,8 +63,6 @@
       /*
        * Components
        */
-
-
       var ContactForm = React.createClass({
         propTypes: {
           value: React.PropTypes.object.isRequired,
@@ -151,9 +147,7 @@
        */
 
 
-      // var CONTACT_TEMPLATE = {name: "", email: "", description: "", errors: null};
          var CONTACT_TEMPLATE = {name: "", description: "", errors: null};
-
 
 
       /*
@@ -168,11 +162,10 @@
 
       function submitNewContact() {
         var contact = Object.assign({}, state.newContact, {key: state.contacts.length + 1, errors: {}});
-        // var ticker = contact.name;
         var ticker = contact;
+        // POST request sent once button is pressed
         sendPOSTrequest(ticker, postQuery);
 
-        // if (contact.name && contact.email) {
           if (contact.name) {
           setState(
             Object.keys(contact.errors).length === 0
@@ -189,7 +182,6 @@
       /*
        * Model
        */
-
 
       // The app's complete current state
       var state = {};
@@ -209,9 +201,7 @@
 
       // Set initial data
       setState({
-        contacts: [
-
-        ],
+        contacts: [],
         newContact: Object.assign({}, CONTACT_TEMPLATE),
       });
 

@@ -75,20 +75,33 @@ public class FinDocParser {
 		return document;
 	}
 	
+	/**
+	 * gets the name of the company of the files
+	 * @return the company name
+	 */
 	public String getCompany(){
 		return company;
 	}
 	
+	/**
+	 * gets the extracted financial data in HashMap form
+	 * @return HashMap of financial data
+	 */
 	public HashMap<String, ArrayList<Double>> getFinData(){
 		return finData;
 	}
 	
+	/**
+	 * This helper method puts the Key-Value pair into the Map according to date
+	 * @param key
+	 * @param value 
+	 * @param year recency of the 10-K
+	 */
 	private void buildFinData(String key, double value, int year){
 		if(year == 0){
 			ArrayList<Double> arr = new ArrayList<Double>();
 			arr.add(value);
 			finData.put(key, arr);
-			System.out.println(finData.get(key));
 		} else{
 			ArrayList<Double> arr = finData.get(key);
 			arr.add(year,value);
@@ -96,6 +109,13 @@ public class FinDocParser {
 		}
 	}
 	
+	/**
+	 * This method provides the function for reading the outermost layer of 
+	 * Gson-converted balance sheet JSON
+	 * 
+	 * @param balance 
+	 * @throws IOException
+	 */
 	private void readBalance(JsonReader balance)throws IOException{
 //		 parse method from gson javadoc
 		 try{
@@ -127,6 +147,12 @@ public class FinDocParser {
 		
 	}
 	
+	/**
+	 * This method provides the function for reading the inner layer of 
+	 * Gson-converted balance sheet JSON
+	 * @param baldat
+	 * @throws IOException
+	 */
 	private void parseBalData(JsonReader baldat)throws IOException{
 		baldat.beginObject();
 	     while (baldat.hasNext()) {
@@ -156,6 +182,13 @@ public class FinDocParser {
 		
 	}
 	
+	/**
+	 * This method provides the function for reading the outermost layer of 
+	 * Gson-converted cash flow statement JSON
+	 * 
+	 * @param cf 
+	 * @throws IOException
+	 */
 	private void readCF(JsonReader cf)throws IOException{
 		 try{
 			 cf.beginObject();
@@ -186,6 +219,12 @@ public class FinDocParser {
 		
 	}
 	
+	/**
+	 * This method provides the function for reading the inner layer of 
+	 * Gson-converted cash flow statement JSON
+	 * @param cfdat
+	 * @throws IOException
+	 */
 	private void parseCFData(JsonReader cfdat)throws IOException{
 		cfdat.beginObject();
 	     while (cfdat.hasNext()) {
@@ -216,7 +255,13 @@ public class FinDocParser {
 		
 	}
 	
-	
+	/**
+	 * This method provides the function for reading the outermost layer of 
+	 * Gson-converted income statement JSON
+	 * 
+	 * @param inc 
+	 * @throws IOException
+	 */
 	private void readIncome(JsonReader inc)throws IOException{
 		 try{
 			 inc.beginObject();
@@ -247,6 +292,12 @@ public class FinDocParser {
 		
 	}
 	
+	/**
+	 * This method provides the function for reading the inner layer of 
+	 * Gson-converted income statement JSON
+	 * @param incdat
+	 * @throws IOException
+	 */
 	private void parseIncData(JsonReader incdat)throws IOException{
 		incdat.beginObject();
 	     while (incdat.hasNext()) {
@@ -289,6 +340,13 @@ public class FinDocParser {
 		
 	}
 	
+	/**
+	 * This method provides the function for reading the outermost layer of 
+	 * Gson-converted key financial ratios JSON
+	 * 
+	 * @param ratio 
+	 * @throws IOException
+	 */
 	private void readRatio(JsonReader ratio)throws IOException{
 //		 parse method from gson javadoc
 		 try{
@@ -306,6 +364,7 @@ public class FinDocParser {
 		         buildFinData("Company", 1.0, year);
 		         System.out.println("[Ratio]Company: " + company);
 		       }else if(name.equals("EarningsPerShare")){
+//		    	   IDs are used to identify which historical parser to use
 		    	   String id = "EarningsPerShare";
 		    	   parseHistoricals(ratio, id);
 		       } else if(name.equals("TotalStockholdersEquity")){
@@ -335,6 +394,12 @@ public class FinDocParser {
 		
 	}
 	
+	/**
+	 * This method provides the function for reading the inner layer of 
+	 * Gson-converted key financial ratios JSON
+	 * @param baldat
+	 * @throws IOException
+	 */
 	private void parseHistoricals(JsonReader ratdat, String id)throws IOException{
 		ratdat.beginObject();
 	     while (ratdat.hasNext()) {
@@ -356,6 +421,11 @@ public class FinDocParser {
 	     	ratdat.endObject();	
 	}
 	
+	/**
+	 * reads the EPS historical in key financial ratios
+	 * @param ratdat
+	 * @throws IOException
+	 */
 	private void parseEPSHistorical(JsonReader ratdat)throws IOException{
 		double sum =0;
 		double count =0;
@@ -397,14 +467,17 @@ public class FinDocParser {
 	}
 	
 
-	
+	/**
+	 * reads the Equity historical in key financial ratios
+	 * @param ratdat
+	 * @throws IOException
+	 */
 	private void parseEquityHistorical(JsonReader ratdat)throws IOException{
 		ratdat.beginObject();
 	     while (ratdat.hasNext()) {
 	    	 String name = ratdat.nextName();
 	    	if(name.startsWith("2015")) {	
 			   buildFinData("Equity%", (ratdat.nextDouble()/100), year);
-			   System.out.println("GOT EQUITY%!");
 			   
 	       } else {
 	    	   ratdat.skipValue();
@@ -414,13 +487,17 @@ public class FinDocParser {
 		
 	}
 	
+	/**
+	 * reads the Shares historical in key financial ratios
+	 * @param ratdat
+	 * @throws IOException
+	 */
 	private void parseSharesHistorical(JsonReader ratdat)throws IOException{
 		ratdat.beginObject();
 	     while (ratdat.hasNext()) {
 	    	 String name = ratdat.nextName();
 	    	if(name.startsWith("2015")) {	
 			   buildFinData("Shares", ratdat.nextDouble()*1000000, year);
-//			   System.out.println("GOT SHARES!");
 	       } else {
 	    	   ratdat.skipValue();
 	       }
@@ -429,13 +506,17 @@ public class FinDocParser {
 		
 	}
 	
+	/**
+	 * reads the book value historical in key financial ratios
+	 * @param ratdat
+	 * @throws IOException
+	 */
 	private void parseBooksHistorical(JsonReader ratdat)throws IOException{
 		ratdat.beginObject();
 	     while (ratdat.hasNext()) {
 	    	 String name = ratdat.nextName();
 	    	if(name.startsWith("2015")) {	
 			   buildFinData("BVperShare", ratdat.nextDouble(), year);
-//			   System.out.println("GOT SHARES!");
 	       } else {
 	    	   ratdat.skipValue();
 	       }
@@ -444,12 +525,17 @@ public class FinDocParser {
 		
 	}
 	
+	/**
+	 * reads the Free Cash Flow historical in key financial ratios
+	 * @param ratdat
+	 * @throws IOException
+	 */
 	private void parseFCFHistorical(JsonReader ratdat)throws IOException{
 		ratdat.beginObject();
 	     while (ratdat.hasNext()) {
 	    	 String name = ratdat.nextName();
 	    	if(name.startsWith("2015")) {
-//	    		System.out.println("GOT FCF!!!");
+//	    		convert the value back to millions
 			   buildFinData("FCF", ratdat.nextDouble()*1000000, year);
 	       } else {
 	    	   ratdat.skipValue();

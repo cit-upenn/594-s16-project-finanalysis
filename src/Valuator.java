@@ -4,9 +4,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * This class gets the financial data and calculates the important ratios and the 
- * target price
- * @author weiyinko
+ * This class gets the financial data and calculates the various important ratios  
+ * along with the target book price.
+ * 
+ * @author weiyin
  *
  */
 public class Valuator {
@@ -15,6 +16,18 @@ public class Valuator {
 	private HashMap<String, ArrayList<Double>> income;
 	private HashMap<String, ArrayList<Double>> ratio;
 	private int year;
+	
+	/**
+	 * The constructor for the Valuator. It takes in the 4 parsed HashMaps of the 
+	 * financial statements along with their "recency" in terms of which year they
+	 * are filed.
+	 * 
+	 * @param balance line items from balance statement
+	 * @param cfs line items from cash flow statement
+	 * @param income line items from income statement
+	 * @param ratio line items from key financial ratios
+	 * @param year the recency of document; 0 is most recent
+	 */
 	public Valuator(HashMap<String, ArrayList<Double>> balance, HashMap<String, ArrayList<Double>> cfs, HashMap<String, ArrayList<Double>> income, HashMap<String, ArrayList<Double>> ratio, int year){
 		this.balance = balance;
 		this.cfs = cfs;
@@ -24,6 +37,10 @@ public class Valuator {
 		
 	}
 	
+	/**
+	 * Gets the Free Cash Flow of the company
+	 * @return FCF
+	 */
 	public double getFCF(){
 		double fcf = 0;
 		if(ratio.containsKey("FCF")){
@@ -33,13 +50,17 @@ public class Valuator {
 		return fcf;
 	}
 	
+	/**
+	 * Gets the Free Cash Flow over Shares ratio
+	 * @return FCF/Shares
+	 */
 	public double getFCFperShare(){
 		double fcfps = 0;
 		if(income.containsKey("Shares")&& ratio.containsKey("FCF")){
 			fcfps = ratio.get("FCF").get(year)/income.get("Shares").get(year);
 			System.out.println("FCF per share: " + fcfps);
 		}else if (ratio.containsKey("Shares")&& ratio.containsKey("FCF")){
-			fcfps = ratio.get("FCF").get(year)/ratio.get("FCF").get(year);
+			fcfps = ratio.get("FCF").get(year)/ratio.get("Shares").get(year);
 			System.out.println("FCF per share: " + fcfps);
 		}else if (income.containsKey("EPS") && cfs.containsKey("OCF")&& income.containsKey("NetNetIncome")){
 //			In case the company does not report their share numbers...
@@ -48,25 +69,41 @@ public class Valuator {
 		return fcfps;
 	}
 	
+	/**
+	 * gets the Equity over Assets Ratio
+	 * @return E/A
+	 */
 	public double getEA(){
 
-		double EA = balance.get("Equity").get(year)/balance.get("Assets").get(year);
+		double EA = 0;
+		if(balance.containsKey("Equity") && balance.containsKey("Assets")){
+			EA = balance.get("Equity").get(year)/balance.get("Assets").get(year);
+		}
+				
 		System.out.println("E/A: " + EA);
 		return EA;
 	}
 	
+	/**
+	 * gets the Liability over Assets Ratio
+	 * @return L/A
+	 */
 	public double getLA(){
 		double LA = 0;
 //		Just in case company does not report liabilities... (ugh)
 		if(balance.containsKey("Liabilities")){
 			LA = balance.get("Liabilities").get(year)/balance.get("Assets").get(year);	
-		} else{
+		} else if (balance.containsKey("Assets") && balance.containsKey("Assets")){
 			LA = (balance.get("Assets").get(year) -	balance.get("Equity").get(year))/balance.get("Assets").get(year);	
 		}
 		System.out.println("L/A: " + LA);
 		return LA;
 	}
 	
+	/**
+	 * gets Earnings Per Share
+	 * @return EPS
+	 */
 	public double getEPS(){
 		if(income.containsKey("EPS")){
 			return income.get("EPS").get(year);
@@ -78,9 +115,14 @@ public class Valuator {
 		
 	}
 	
+	/**
+	 * gets Equity over Share Ratio
+	 * @return E/Shares
+	 */
 	public double getEquityShare(){
 		if(ratio.containsKey("Equity%") && ratio.containsKey("Shares")&& balance.containsKey("Assets")){
 			double es = (balance.get("Assets").get(year)*ratio.get("Equity%").get(year))/ratio.get("Shares").get(year);
+			System.out.println("E/S: " + es);
 			return es;
 		} else if (income.containsKey("EPS")){
 			return balance.get("Equity").get(year)/(income.get("NetIncome").get(year)/income.get("EPS").get(year));
@@ -90,6 +132,10 @@ public class Valuator {
 		return 0.0;
 	}
 	
+	/**
+	 * gets Target Book Price
+	 * @return target book price
+	 */
 	public double getTargetPrice(){
 		double target = 0.0;
 		double growth = 0.0;
@@ -102,11 +148,17 @@ public class Valuator {
 		System.out.println("Growth: " + growth);
 		if(getEquityShare() > 0){
 			target = growth * getEquityShare();
+			System.out.println("Target: " + target);
 		}
 		
 		return target;
 	}
 	
+	/**
+	 * A helper method for rounding the ratios
+	 * @param number a number
+	 * @return number rounded to 2 decimal places
+	 */
 	private double Rounder(double number){
 		double rounded = Math.round(number*100.0)/100.0;
 		
@@ -114,7 +166,10 @@ public class Valuator {
 	}
 	
 	
-	
+	/**
+	 * This method returns a Map with the values to be displayed
+	 * @return Map with values for JavatoNode.json
+	 */
 	public Map<String, Double> getJSON(){
 //		I wanted some ordering in the JSON presented so TreeMap is used
 		Map<String, Double> json = new TreeMap<String, Double>();
@@ -136,20 +191,16 @@ public class Valuator {
 			return json;
 		}
 		
-		json.put("6|FCF ", getFCF());
-		json.put("3|FCF/Share ", Rounder(getFCFperShare()));
+		json.put("4|FCF ", getFCF());
+		json.put("5|FCF/Share ", Rounder(getFCFperShare()));
 		if(getEA() > 0 && getLA() > 0){
-			json.put("4|E/D ", Rounder(getEA()/getLA()));
+			json.put("3|D/E ", Rounder(getLA()/getEA()));
 		}
-		json.put("5|Equity/Share ",  Rounder(getEquityShare()));
+		json.put("6|Equity/Share ",  Rounder(getEquityShare()));
 		
 		json.put("2|EPS ", getEPS());
 		json.put("1|Target Book Price ", Rounder(getTargetPrice()));
 		
-		System.out.println("6|FCF " + getFCF());
-		System.out.println("3|FCFperShare " + getFCFperShare());
-		System.out.println("2|EPS " + getEPS());
-		System.out.println("1|Target Book Price " + getTargetPrice());
 
 		return json;
 	}

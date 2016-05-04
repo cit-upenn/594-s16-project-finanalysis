@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 
 /**
  * The NodeCommunicator class runs in intervals to communicate with the Node.js codes.
- * It waits for a start message and periodically ultilizes the FinDocParser and Valuator
+ * It waits for a start message and periodically utilizes the FinDocParser and Valuator
  * to interpret the JSONs and send a JSON back to Node. It utilizes the Singleton pattern.
  * @author weiyin
  *
@@ -111,7 +111,8 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 				
 				out2.println(json);
 				out2.close();
-				
+//				once the OKAY command is received, construct the JavatoNode.json to send
+//				back to apicalls.js
 				if(getDecision() == true){
 					HashMap<String, ArrayList<Double>> balanceData = new HashMap<String, ArrayList<Double>>();
 					HashMap<String, ArrayList<Double>> CFData = new HashMap<String, ArrayList<Double>>();
@@ -133,7 +134,7 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 						}
 					}
 //					Since it's impossible to make more than 5 calls per minute, only the
-//					most recent year data is used
+//					most recent year data is used in the end :(
 					
 					Valuator vt0 = new Valuator(balanceData, CFData, incData,ratData, 0);
 					
@@ -143,9 +144,6 @@ public class NodeCommunicator extends TimerTask implements Runnable{
 					out.close();
 				}
 				
-
-				
-
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Error getting Input/Output!");

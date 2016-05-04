@@ -9,10 +9,7 @@
 	JavatoNode = new Object;
 
 
-
-	// var test = () =>{
-	// 	console.log('this is just a long test string');
-	// }
+	// gets message from Java code
 	var getJavaOutput = () => {
 			console.log('getting JavatoNode!');
 		    console.log('Java status: ' + JavatoNode.Ready);
@@ -24,11 +21,13 @@
 		return JavatoNode;
 	}
 
+	// sets the newest JavatoNode.json
 	var setJavaOutput = (input) => {
 		JavatoNode = input;
 		console.log('JtN set!');
 	}
 
+	// functions that can be called by external sources
 	module.exports = {
 		  setTicker: (symbol)=>{
 		  		var ticker = symbol;
@@ -51,17 +50,19 @@
 			}
 		};
 
-
+	// params for request
     var params = {
         	// Request parameters
 	        "formType": "10-K",
 	        "filingOrder": "0",
 	    };
 
+	// header with API key 
     var header = {"Ocp-Apim-Subscription-Key": "d2d9d9cb72264482ad1e3941394b3b74"
 
 		};
-     
+    
+    // a function for constructing the API calls
    	var makeGetters = (ticker, doc) =>{
    		var koolObj = {
    			hostname: "services.last10k.com",
@@ -73,7 +74,7 @@
    		return koolObj;
    	}
  
-
+   	// outputs balance.json
 	var writeBalance =(response)=> {
 		  var str = '';
 		  // appending data to string
@@ -88,12 +89,11 @@
 			  if (err) throw err;
 			  console.log('write balance complete!');
 			  balanceDone = !balanceDone;
-			  // console.log(balanceDone);
 			});
 		  });
 		}
 
-
+	// outputs CashFlow.json
 	var writeCF = (response)=> {
 		  var str = '';
 		  // appending data to string
@@ -112,6 +112,7 @@
 		  });
 		}
 
+	// outputs Income.json
 	var writeInc = (response)=> {
 		  var str = '';
 		  // appending data to string
@@ -130,6 +131,7 @@
 		  });
 		}
 
+	// outputs Ratio.json
 	var writeRatio = (response)=> {
 		  var str = '';
 		  // appending data to string
@@ -154,9 +156,8 @@
 		var i = (getInc, writeInc) =>{https.request(getInc, writeInc).end(); }
 		var r = (getRatio, writeRatio) =>{https.request(getRatio, writeRatio).end(); }
 
-
+		// function for making multiple API calls at the same time
    		var makeCalls = (getBalance,getCF,getInc,getRatio ) =>{
-   			// console.log('Making the calls! Ticker is ' + ticker);
 			   	b(getBalance, writeBalance);
 		   		c(getCF, writeCF);
 		   		i(getInc, writeInc);
@@ -173,10 +174,7 @@
 
    		// check if all API calls have returned
 		setInterval(()=>{
-   			// console.log(balanceDone);
-   			// console.log(CFDone);
-   			// console.log(incDone);
-   			// console.log(ratioDone);
+
    			if(	balanceDone === true &&  CFDone === true &&  incDone === true &&  ratioDone === true){
 
 				fs.writeFile('NodetoJava.txt', 'OKAY', (err) => {

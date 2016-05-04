@@ -3,7 +3,7 @@ import java.util.Timer;
 
 
 /**
- * This class provides a main method for running the FinDoc Analyzer
+ * This class provides a main method for running the NodeCommunicator
  * @author weiyin
  *
  */
